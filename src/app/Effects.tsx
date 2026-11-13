@@ -32,6 +32,8 @@ export default function Effects() {
       }
       io.unobserve(e.target);
     }), { threshold: 0.15 });
+    // numbers are server-rendered final values; reset to 0 only once JS is running so they can count up
+    if (!still) document.querySelectorAll<HTMLElement>("[data-n]").forEach((n) => { n.innerHTML = "0"; });
     document.querySelectorAll(".rv").forEach((el) => io.observe(el));
 
     const spy = new IntersectionObserver((es) => es.forEach((e) => {

@@ -113,7 +113,7 @@ nav a.l:hover,nav a.l.on{color:#fff}
 .arrows{display:flex;gap:8px}
 .arrows button{width:46px;height:46px;border-radius:50%;border:1px solid var(--bd);background:#fff;font-size:18px;cursor:pointer;color:var(--ink);transition:border-color .2s,color .2s}
 .arrows button:hover{border-color:var(--o);color:var(--o)}
-.rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(300px,360px);gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:30px 24px 16px;margin:0 -24px;scrollbar-width:none}
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(300px,360px);gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:24px;padding:30px 24px 16px;margin:0 -24px;scrollbar-width:none}
 .rail::-webkit-scrollbar{display:none}
 .rail .card{scroll-snap-align:start;display:flex;flex-direction:column}
 .rail h3{font-size:19px;margin-bottom:8px}.rail p{color:var(--mut);font-size:14.5px}
@@ -192,3 +192,28 @@ footer .logo{display:inline-block;margin-bottom:14px}
 .d-s1{left:5%;top:58%}.d-s2{left:44%;top:16%;font-size:16px}.d-s3{left:40%;bottom:14%;font-size:14px}
 @media(max-width:900px){.d-dots,.d-s2,.d-s3{display:none}}
 @media(max-width:768px){section{padding:56px 0}}
+
+/* mobile refinements */
+@media(max-width:900px){
+  .pol{height:auto;max-width:none;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+  .pol figure{position:relative;inset:auto;left:auto;right:auto;top:auto;width:auto;height:190px}
+  .p1{rotate:-3deg}.p2{rotate:3deg}
+  .p3{grid-column:1/-1;width:auto;left:auto;height:220px;rotate:-1deg}
+  .hero{min-height:auto;padding-bottom:96px}
+}
+@media(max-width:600px){
+  .objs{gap:22px;margin-top:36px}
+  .objs div{padding-top:14px}
+  .objs h3{margin-top:8px}
+  .bento .card{padding:22px}
+  .plan{padding:26px}
+}
+@media(max-width:520px){
+  .steps{text-align:left;gap:20px;margin-top:28px}
+  .steps>div{display:grid;grid-template-columns:48px 1fr;column-gap:16px;align-items:center}
+  .steps .num{margin:0;grid-row:span 2;box-shadow:none}
+  .steps h3{margin:0}
+  .fgrid{grid-template-columns:1fr 1fr;gap:28px 20px}
+  .fgrid>div:first-child,.fgrid>div:last-child{grid-column:1/-1}
+  .big .out{-webkit-text-stroke-width:1.5px}
+}

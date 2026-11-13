@@ -49,10 +49,10 @@ export default function Home() {
 <section className="stats" aria-label="At a glance">
   <div className="wrap">
     <div className="statrow">
-      <div className="card stat rv"><div className="n" data-n="5">0</div><div className="t">Focus areas</div></div>
-      <div className="card stat rv" style={{"--i": "1"} as React.CSSProperties}><div className="n" data-n="8" data-s="+">0</div><div className="t">Programs</div></div>
-      <div className="card stat rv" style={{"--i": "2"} as React.CSSProperties}><div className="n" data-n="3">0</div><div className="t">Month pre-incubation</div></div>
-      <div className="card stat rv" style={{"--i": "3"} as React.CSSProperties}><div className="n" data-n="6">0</div><div className="t">Month incubation</div></div>
+      <div className="card stat rv"><div className="n" data-n="5">5</div><div className="t">Focus areas</div></div>
+      <div className="card stat rv" style={{"--i": "1"} as React.CSSProperties}><div className="n" data-n="8" data-s="+">8<span>+</span></div><div className="t">Programs</div></div>
+      <div className="card stat rv" style={{"--i": "2"} as React.CSSProperties}><div className="n" data-n="3">3</div><div className="t">Month pre-incubation</div></div>
+      <div className="card stat rv" style={{"--i": "3"} as React.CSSProperties}><div className="n" data-n="6">6</div><div className="t">Month incubation</div></div>
     </div>
     <p className="notice rv"><MegaphoneSimple style={{"color": "var(--o)", "fontSize": "20px"} as React.CSSProperties} /><span><b>Pre-Incubation cohort applications are open.</b> Apply soon to secure your spot.</span></p>
   </div>
