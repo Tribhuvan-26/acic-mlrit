@@ -24,6 +24,10 @@ export default function Home() {
 
 <main>
 <section className="hero" id="home">
+  <div className="hero-deco" aria-hidden="true">
+    <span className="d-ring" /><span className="d-tri" /><span className="d-tri2" /><span className="d-dots" />
+    <span className="d-star d-s1">✦</span><span className="d-star d-s2">✦</span><span className="d-star d-s3">✦</span>
+  </div>
   <div className="wrap">
     <div>
       <div className="hand in-1">Atal Community Innovation Centre, MLRIT</div>
@@ -154,7 +158,7 @@ export default function Home() {
       </div>
     </div>
 
-    <div className="maker" id="makerspace" style={{"marginTop": "120px", "scrollMarginTop": "110px"} as React.CSSProperties}>
+    <div className="maker" id="makerspace" style={{"marginTop": "80px", "scrollMarginTop": "90px"} as React.CSSProperties}>
       <img className="rv" src="/gallery/startup-lab.jpg" alt="Innovators working at benches in the MLRIT lab" width="900" height="600" loading="lazy" />
       <div>
         <h2 className="rv">Makerspace and sector labs</h2>
