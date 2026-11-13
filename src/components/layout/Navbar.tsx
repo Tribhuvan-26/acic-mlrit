@@ -1,0 +1,521 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useNavbarVisibility } from "@/context/NavbarContext";
+import { motion, AnimatePresence } from "framer-motion";
+
+/* ─── Data ─────────────────────────────────────────────────── */
+
+const NAV_LINKS = [
+  { label: "Home",      href: "/" },
+  { label: "About",     href: "/about" },
+  { label: "Programs",  href: "/programs" },
+  { label: "Contact",   href: "/contact" },
+];
+
+const SOCIALS = [
+  { label: "Instagram", href: "#" },
+  { label: "LinkedIn",  href: "#" },
+  { label: "YouTube",   href: "#" },
+  { label: "Twitter",   href: "#" },
+];
+
+/* ─── Desktop nav link ─────────────────────────────────────── */
+function NavLink({
+  item,
+  isActive,
+}: {
+  item: { label: string; href: string };
+  isActive: boolean;
+}) {
+  const [hov, setHov] = useState(false);
+
+  return (
+    <Link
+      href={item.href}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        position: "relative",
+        fontFamily: "var(--font-body)",
+        fontWeight: isActive ? 600 : 400,
+        fontSize: "13px",
+        letterSpacing: "0.01em",
+        color: isActive ? "#FFFFFF" : hov ? "#FFFFFF" : "rgba(255,255,255,0.50)",
+        textDecoration: "none",
+        paddingBottom: "6px",
+        display: "inline-block",
+        transition: "color 0.18s ease",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {item.label}
+
+      {/* Active — small orange dot */}
+      <span
+        style={{
+          position: "absolute",
+          bottom: "0",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "3.5px",
+          height: "3.5px",
+          borderRadius: "50%",
+          background: "#E8521A",
+          opacity: isActive ? 1 : 0,
+          transition: "opacity 0.2s ease",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Hover — thin underline slides in */}
+      <motion.span
+        animate={{ scaleX: hov && !isActive ? 1 : 0 }}
+        initial={{ scaleX: 0 }}
+        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+        style={{
+          position: "absolute",
+          bottom: "0",
+          left: 0,
+          right: 0,
+          height: "1px",
+          background: "rgba(255,255,255,0.60)",
+          display: "block",
+          transformOrigin: "left",
+          pointerEvents: "none",
+        }}
+      />
+    </Link>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Main Navbar — floating pill
+═══════════════════════════════════════════════════════════════ */
+export default function Navbar() {
+  const { hidden }              = useNavbarVisibility();
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen]         = useState(false);
+  const pathname                = usePathname();
+
+  useEffect(() => { setOpen(false); }, [pathname]);
+
+  useEffect(() => {
+    let raf = 0;
+    const fn = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        setScrolled(window.scrollY > 40);
+      });
+    };
+    setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => { window.removeEventListener("scroll", fn); if (raf) cancelAnimationFrame(raf); };
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", fn);
+    return () => document.removeEventListener("keydown", fn);
+  }, []);
+
+  if (hidden) return null;
+
+  return (
+    <>
+      {/* ══════════════════════════════════════════════════════
+          Floating pill
+      ══════════════════════════════════════════════════════ */}
+      {/* Centering shell — owns position:fixed + top transition */}
+      <div
+        style={{
+          position: "fixed",
+          top: scrolled ? "12px" : "20px",
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          display: "flex",
+          justifyContent: "center",
+          padding: "0 14px",
+          pointerEvents: "none",
+          transition: "top 0.45s cubic-bezier(0.16,1,0.3,1)",
+        }}
+      >
+      {/* FM only drives y entrance — no transform conflict */}
+      <motion.div
+        initial={{ y: -72, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.72, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        style={{
+          width: "min(1240px, 100%)",
+          pointerEvents: "auto",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            width: "100%",
+            background: scrolled
+              ? "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 45%, rgba(255,255,255,0.07) 100%), rgba(10,10,12,0.90)"
+              : "linear-gradient(135deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.03) 45%, rgba(255,255,255,0.08) 100%), rgba(12,12,14,0.86)",
+            backdropFilter: "blur(20px) saturate(150%)",
+            WebkitBackdropFilter: "blur(20px) saturate(150%)",
+            border: "1px solid rgba(255,255,255,0.14)",
+            borderRadius: "9999px",
+            boxShadow: scrolled
+              ? "0 10px 44px rgba(0,0,0,0.42), 0 2px 8px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.30)"
+              : "0 6px 30px rgba(0,0,0,0.28), 0 1px 4px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.24), inset 0 -1px 0 rgba(0,0,0,0.26)",
+            /* Compact padding when scrolled */
+            padding: scrolled ? "5px 5px 5px 18px" : "7px 7px 7px 22px",
+            gap: 0,
+            transition: "background 0.4s ease, box-shadow 0.4s ease, padding 0.4s cubic-bezier(0.16,1,0.3,1)",
+          }}
+        >
+          {/* ── Logo ─────────────────────────────────────────── */}
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            style={{
+              display: "inline-flex",
+              alignItems: "baseline",
+              textDecoration: "none",
+              flexShrink: 0,
+              marginRight: "clamp(14px, 2vw, 26px)",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontWeight: 800,
+                fontSize: scrolled ? "17px" : "19px",
+                letterSpacing: "-0.04em",
+                color: "#FFFFFF",
+                lineHeight: 1,
+                transition: "font-size 0.4s ease",
+              }}
+            >
+              ACIC
+            </span>
+            <span
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontWeight: 800,
+                fontSize: scrolled ? "19px" : "21px",
+                color: "#E8521A",
+                lineHeight: 1,
+                transition: "font-size 0.4s ease",
+              }}
+            >
+              .
+            </span>
+          </Link>
+
+          {/* ── Nav links — desktop (lg+) ─────────────────────── */}
+          <nav
+            aria-label="Main navigation"
+            className="nav-desktop-links"
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "clamp(18px, 2.6vw, 36px)",
+            }}
+          >
+            {NAV_LINKS.map((item) => (
+              <NavLink key={item.href} item={item} isActive={pathname === item.href} />
+            ))}
+          </nav>
+
+          {/* ── Mobile spacer — pushes hamburger to right on <md ── */}
+          <div className="nav-mobile-space" style={{ flex: 1 }} />
+
+          {/* ── Separator — desktop ───────────────────────────── */}
+          <div
+            className="nav-desktop-sep"
+            style={{
+              width: "1px",
+              height: "16px",
+              background: "rgba(255,255,255,0.14)",
+              flexShrink: 0,
+              margin: "0 clamp(12px, 1.6vw, 20px)",
+            }}
+          />
+
+          {/* ── Hamburger — phones only (< 768px) ─────────────── */}
+          <div className="nav-hamburger" style={{ display: "flex", flexShrink: 0 }}>
+            <motion.button
+              onClick={() => setOpen((v) => !v)}
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              whileTap={{ scale: 0.9 }}
+              style={{
+                width: "42px",
+                height: "42px",
+                borderRadius: "12px",
+                border: open
+                  ? "1.5px solid #E8521A"
+                  : "1.5px solid rgba(255,255,255,0.14)",
+                background: open ? "#E8521A" : "rgba(255,255,255,0.08)",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "5px",
+                boxShadow: open
+                  ? "0 0 16px rgba(232,82,26,0.40)"
+                  : "none",
+                transition: "background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease",
+              }}
+            >
+              <motion.span
+                animate={{ rotate: open ? 45 : 0, y: open ? 6.5 : 0 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                style={{
+                  display: "block",
+                  height: "2px",
+                  width: "18px",
+                  background: "#FFFFFF",
+                  borderRadius: "2px",
+                  transformOrigin: "center",
+                  transition: "background 0.22s ease",
+                }}
+              />
+              <motion.span
+                animate={{ opacity: open ? 0 : 1, scaleX: open ? 0 : 1 }}
+                transition={{ duration: 0.18 }}
+                style={{
+                  display: "block",
+                  height: "2px",
+                  width: "12px",
+                  background: "#FFFFFF",
+                  borderRadius: "2px",
+                  alignSelf: "flex-end",
+                  marginRight: "12px",
+                  transition: "background 0.22s ease",
+                }}
+              />
+              <motion.span
+                animate={{ rotate: open ? -45 : 0, y: open ? -6.5 : 0 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                style={{
+                  display: "block",
+                  height: "2px",
+                  width: "18px",
+                  background: "#FFFFFF",
+                  borderRadius: "2px",
+                  transformOrigin: "center",
+                  transition: "background 0.22s ease",
+                }}
+              />
+            </motion.button>
+          </div>
+        </div>
+      </motion.div>
+      </div>{/* end centering shell */}
+
+      {/* ══════════════════════════════════════════════════════
+          Mobile fullscreen overlay
+      ══════════════════════════════════════════════════════ */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ clipPath: "inset(0 0 100% 0)" }}
+            animate={{
+              clipPath: "inset(0 0 0% 0)",
+              transition: { duration: 0.52, ease: [0.76, 0, 0.24, 1] },
+            }}
+            exit={{
+              clipPath: "inset(0 0 100% 0)",
+              transition: { duration: 0.38, ease: [0.76, 0, 0.24, 1] },
+            }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
+            className="flex flex-col"
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 99,
+              background: "#FAFAF9",
+              overflow: "hidden",
+            }}
+          >
+            {/* CSS overrides for landscape phones and very small screens */}
+            <style>{`
+              @media (max-height: 480px) {
+                .ov-link { font-size: 16px !important; padding: 5px 0 !important; }
+              }
+              @media (max-width: 360px) {
+                .ov-link { font-size: 19px !important; }
+              }
+            `}</style>
+
+            {/* Top strip in overlay */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "16px clamp(20px, 5vw, 48px)",
+                borderBottom: "1px solid rgba(0,0,0,0.06)",
+                flexShrink: 0,
+              }}
+            >
+              <Link
+                href="/"
+                onClick={() => setOpen(false)}
+                style={{ display: "inline-flex", alignItems: "baseline", textDecoration: "none" }}
+              >
+                <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "19px", letterSpacing: "-0.04em", color: "#111111" }}>
+                  ACIC
+                </span>
+                <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "21px", color: "#E8521A" }}>.</span>
+              </Link>
+              <span style={{
+                fontFamily: "var(--font-body)", fontSize: "11px",
+                fontWeight: 600, letterSpacing: "0.08em",
+                textTransform: "uppercase", color: "rgba(0,0,0,0.28)",
+              }}>
+                ACIC · MLRIT
+              </span>
+            </div>
+
+            {/* Nav items — scrollable so landscape phones never clip */}
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                padding: "clamp(8px, 2vh, 20px) clamp(20px, 5vw, 56px)",
+                overflowY: "auto",
+              }}
+            >
+              {NAV_LINKS.map((item, i) => (
+                <motion.div
+                  key={item.href}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 0.16 + i * 0.04,
+                    duration: 0.38,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  style={{ borderBottom: "1px solid rgba(0,0,0,0.055)" }}
+                >
+                  <Link
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="ov-link"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      fontFamily: "var(--font-heading)",
+                      fontWeight: 800,
+                      fontSize: "clamp(20px, 5vw, 42px)",
+                      letterSpacing: "-0.03em",
+                      color: pathname === item.href ? "rgba(0,0,0,0.22)" : "#0A0A0A",
+                      textDecoration: "none",
+                      padding: "clamp(8px, 1.4vh, 15px) 0",
+                      transition: "color 0.15s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (pathname !== item.href)
+                        (e.currentTarget as HTMLAnchorElement).style.color = "rgba(0,0,0,0.4)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLAnchorElement).style.color =
+                        pathname === item.href ? "rgba(0,0,0,0.22)" : "#0A0A0A";
+                    }}
+                  >
+                    {item.label}
+                    {pathname === item.href && (
+                      <span
+                        style={{
+                          width: "6px",
+                          height: "6px",
+                          borderRadius: "50%",
+                          background: "#E8521A",
+                          flexShrink: 0,
+                        }}
+                      />
+                    )}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Bottom — socials */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.44, duration: 0.3 }}
+              style={{
+                padding: "14px clamp(20px, 5vw, 56px)",
+                borderTop: "1px solid rgba(0,0,0,0.06)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: "8px",
+                flexShrink: 0,
+              }}
+            >
+              <div style={{ display: "flex", gap: "clamp(12px,3vw,20px)", flexWrap: "wrap" }}>
+                {SOCIALS.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      fontFamily: "var(--font-body)",
+                      fontSize: "9.5px",
+                      fontWeight: 600,
+                      letterSpacing: "0.10em",
+                      textTransform: "uppercase",
+                      color: "rgba(0,0,0,0.28)",
+                      textDecoration: "none",
+                      transition: "color 0.18s",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLAnchorElement).style.color = "#000000";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLAnchorElement).style.color = "rgba(0,0,0,0.28)";
+                    }}
+                  >
+                    {s.label}
+                  </a>
+                ))}
+              </div>
+              <span
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontSize: "9.5px",
+                  letterSpacing: "0.10em",
+                  textTransform: "uppercase",
+                  color: "rgba(0,0,0,0.18)",
+                }}
+              >
+                ACIC · MLRIT
+              </span>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
