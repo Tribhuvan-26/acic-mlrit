@@ -1,1234 +1,232 @@
-"use client";
+/* eslint-disable @next/next/no-img-element */
+import { AirplaneTakeoff, ArrowLeft, ArrowRight, ArrowUp, Brain, Briefcase, Bus, CarSimple, CheckCircle, Cpu, Cube, Desktop, Drone, EnvelopeSimple, Gauge, GraduationCap, HandHeart, InstagramLogo, Lightbulb, Lightning, LinkedinLogo, List, MagnifyingGlass, MapPin, MegaphoneSimple, Network, Palette, Plant, Plug, Plus, Printer, Recycle, Robot, RocketLaunch, Scales, Scissors, Student, Thermometer, Tractor, Users, UsersThree, WaveSine, Waveform, Wrench, XLogo, YoutubeLogo } from "@phosphor-icons/react/dist/ssr";
+import Effects from "./Effects";
 
-import { motion, useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { getGrainDataUri } from "@/lib/grain";
-import {
-  ArrowRight,
-  Lightbulb,
-  Rocket,
-  Users,
-  Trophy,
-  Zap,
-  ChevronRight,
-  ChevronLeft,
-  TrendingUp,
-  Layers,
-  Printer,
-  Handshake,
-  BookOpen,
-  PenLine,
-  MessageSquare,
-} from "lucide-react";
-
-/* ── Animated counter ─────────────────────────────────────────────── */
-function AnimatedCounter({
-  end,
-  suffix = "",
-  duration = 2,
-}: {
-  end: number;
-  suffix?: string;
-  duration?: number;
-}) {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true });
-
-  useEffect(() => {
-    if (!inView) return;
-    let start = 0;
-    const steps = 60;
-    const increment = end / steps;
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) {
-        setCount(end);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, (duration * 1000) / steps);
-    return () => clearInterval(timer);
-  }, [inView, end, duration]);
-
+export default function Home() {
   return (
-    <span ref={ref} aria-live="polite" aria-atomic="true">
-      {count}
-      {suffix}
-    </span>
-  );
-}
+    <>
 
-/* ── FadeIn wrapper ───────────────────────────────────────────────── */
-function FadeIn({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 28 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
-/* ── Section divider ──────────────────────────────────────────────── */
-function SectionDivider({ topBg = "#FFFFFF", btmBg = "#FFFFFF" }: { topBg?: string; btmBg?: string }) {
-  return (
-    <div style={{ background: `linear-gradient(to bottom, ${topBg} 50%, ${btmBg} 50%)` }}>
-      <div style={{
-        display: "flex", alignItems: "center",
-        maxWidth: "1200px", margin: "0 auto",
-        padding: "0 clamp(16px, 5vw, 48px)",
-      }}>
-        <div style={{ flex: 1, height: "1px", background: "rgba(0,0,0,0.08)" }} />
-        <div style={{ display: "flex", gap: "6px", padding: "0 14px", alignItems: "center" }}>
-          <div style={{ width: "3px", height: "3px", borderRadius: "50%", background: "rgba(0,0,0,0.18)" }} />
-          <div style={{ width: "5px", height: "5px", transform: "rotate(45deg)", background: "#E8521A", opacity: 0.45 }} />
-          <div style={{ width: "3px", height: "3px", borderRadius: "50%", background: "rgba(0,0,0,0.18)" }} />
-        </div>
-        <div style={{ flex: 1, height: "1px", background: "rgba(0,0,0,0.08)" }} />
+<nav id="nav" aria-label="Primary">
+  <a href="#home" className="logo">ACIC<b>.</b></a>
+  <button id="mt" aria-label="Open menu" aria-expanded="false"><List /></button>
+  <div className="links">
+    <a className="l on" href="#home">Home</a>
+    <a className="l" href="#about">About</a>
+    <a className="l" href="#focus">Focus Areas</a>
+    <a className="l" href="#programs">Programs</a>
+    <a className="l" href="#incubation">Incubation</a>
+    <a className="l" href="#makerspace">Makerspace</a>
+    <a className="l" href="#faq">FAQs</a>
+    <a className="l" href="#contact">Contact</a>
+  </div>
+</nav>
+
+<main>
+<section className="hero" id="home">
+  <div className="wrap">
+    <div>
+      <div className="hand in-1">Atal Community Innovation Centre, MLRIT</div>
+      <h1 className="big in-2">Empowering<br /><span className="out">Innovations</span><br />for Bharath</h1>
+      <p className="in-3">We identify, build and nurture sustainable communities through innovation.</p>
+      <div className="cta in-3">
+        <a className="btn" href="#incubation">Apply now <ArrowRight /></a>
+        <a className="btn ghost" href="#programs">Our programs</a>
       </div>
     </div>
-  );
-}
-
-/* ── Data ─────────────────────────────────────────────────────────── */
-const stats = [
-  { value: 5,  suffix: "",  label: "Focus Areas",          icon: Layers,     color: "#2563EB" },
-  { value: 6,  suffix: "+", label: "Programs",             icon: Trophy,     color: "#EA580C" },
-  { value: 3,  suffix: "",  label: "Month Pre-Incubation", icon: Rocket,     color: "#9333EA" },
-  { value: 12, suffix: "",  label: "Month Incubation",     icon: TrendingUp, color: "#16A34A" },
-];
-
-const programs = [
-  {
-    icon: BookOpen,
-    title: "Grassroots Innovation Program",
-    desc: "GRIP is a four-month initiative nurturing innovation and entrepreneurship among rural youth by building their 21st century skill set.",
-    tag: "4 Months",
-    color: "#16A34A",
-  },
-  {
-    icon: Zap,
-    title: "Innovation Yatra",
-    desc: "A five-day bus journey through Telangana's innovation ecosystem to meet the unsung grassroots innovators of rural Telangana.",
-    tag: "5 Days",
-    color: "#9333EA",
-  },
-  {
-    icon: Handshake,
-    title: "Community Innovator Fellowship",
-    desc: "With Atal Innovation Mission, NITI Aayog and UNDP India, a year-long intensive fellowship for aspiring community innovators.",
-    tag: "1 Year",
-    color: "#0891B2",
-  },
-  {
-    icon: Rocket,
-    title: "Liftoff Accelerator",
-    desc: "With the Wadhwani Foundation, a milestone-driven program helping early-stage startups achieve investor readiness at no cost.",
-    tag: "Free",
-    color: "#CA8A04",
-  },
-];
-
-const studios = [
-  { icon: Lightbulb, name: "Pre-Incubation",           color: "#CA8A04", desc: "A three-month structured program that takes your innovative idea through customer mapping and validation to a Minimum Viable Product." },
-  { icon: Rocket,    name: "Incubation",               color: "#DC2626", desc: "Six to twelve months of go-to-market strategy, pilot support, IPR guidance and a Demo Day with investors for startups with an MVP." },
-  { icon: Printer,   name: "Makerspace & Labs",        color: "#0891B2", desc: "Sector-specific labs with 3D printing, laser cutting, drone and UGV kits, and electronics test equipment to build and test prototypes." },
-  { icon: Handshake, name: "Mentors & Support",        color: "#9333EA", desc: "A sector-specific mentor pool from academia and industry, plus Legal, IPR, Funding and Market Access support to build sustainable startups." },
-];
-
-const timeline = [
-  { step: "01", title: "Understand",     desc: "Identify and map your target customers and stakeholders",                    icon: Users,         color: "#CA8A04" },
-  { step: "02", title: "Validate",       desc: "Explore and validate the customer problem before you build",                 icon: MessageSquare, color: "#2563EB" },
-  { step: "03", title: "Prototype",      desc: "Design and test your prototype or MVP in our makerspace",                     icon: PenLine,       color: "#9333EA" },
-  { step: "04", title: "Business Model", desc: "Shape a business model that can sustain and scale your idea",                 icon: Lightbulb,     color: "#EA580C" },
-  { step: "05", title: "Incubate",       desc: "Pilots, IPR support and a Demo Day with investors to take your venture to market", icon: TrendingUp, color: "#0891B2" },
-];
-
-
-const homeFacilities = [
-  { icon: Printer,      title: "3D Printing",         desc: "Single extruder 3D printer for rapid prototyping of parts and product enclosures." },
-  { icon: Zap,          title: "Laser Cutting",       desc: "CO2 laser engraver and cutting machine for precise cutting and engraving." },
-  { icon: Rocket,       title: "UAV & UGV Kits",      desc: "Drone and unmanned ground vehicle assembly kits to build and test mobility prototypes." },
-  { icon: Lightbulb,    title: "Electronics Bench",   desc: "Tektronix oscilloscopes and function generator, Keithley multimeter, Yokogawa power meter and soldering kits." },
-  { icon: TrendingUp,   title: "Thermal Imaging",     desc: "FLIR C5 compact thermal camera for testing and diagnostics." },
-  { icon: Layers,       title: "Co-Working",          desc: "Co-working and virtual incubation facilities for innovators and startups." },
-];
-
-/* ── Design tokens ────────────────────────────────────────────────── */
-const CONTAINER  = "page-container";
-const SECTION_PY = "clamp(48px, 5vw, 80px)";
-const T_PRIMARY   = "#000000";
-const T_SECONDARY = "#000000";
-const T_MED       = "#374151";
-const T_MUTED     = "#6B7280";
-const ORANGE      = "#E8521A";
-
-/* Exact brand palette */
-const BG_WHITE   = "#FFFFFF";
-const BG_CREAM   = "#FFFFFF";   /* Light Orange Background  */
-const BG_SURFACE = "#FFFFFF";   /* Soft Orange Surface      */
-const BG_WARM    = "#FFFFFF";   /* Warm Neutral             */
-const NAVY       = "#000000";   /* Premium dark accent      */
-
-/* ═══════════════════════════════════════════════════════════════════ */
-export default function HomePage() {
-  const timelineScrollRef = useRef<HTMLDivElement>(null);
-  const [timelineEdge, setTimelineEdge] = useState({ atStart: true, atEnd: false });
-  const updateTimelineEdge = () => {
-    const el = timelineScrollRef.current;
-    if (!el) return;
-    const cards = Array.from(el.querySelectorAll<HTMLElement>(":scope > *:not([aria-hidden])"));
-    if (!cards.length) return;
-    const first = cards[0];
-    const last = cards[cards.length - 1];
-    const firstTarget = first.offsetLeft + first.offsetWidth / 2 - el.clientWidth / 2;
-    const lastTarget = last.offsetLeft + last.offsetWidth / 2 - el.clientWidth / 2;
-    setTimelineEdge({ atStart: el.scrollLeft <= firstTarget + 4, atEnd: el.scrollLeft >= lastTarget - 4 });
-  };
-  useEffect(() => { updateTimelineEdge(); }, []);
-  const scrollTimeline = (dir: 1 | -1) => {
-    const el = timelineScrollRef.current;
-    if (!el) return;
-    const card = el.querySelector<HTMLElement>(":scope > *:not([aria-hidden])");
-    const step = (card?.offsetWidth ?? 260) + 32;
-    el.scrollBy({ left: dir * step, behavior: "smooth" });
-  };
-
-  return (
-    <div style={{ background: BG_WHITE }}>
-
-      {/* ────────────────────────────────────────────────────────────
-          HERO  —  Bold Editorial Collage
-      ──────────────────────────────────────────────────────────── */}
-      <section
-        className="page-hero hero-shrink-mobile relative overflow-hidden flex flex-col"
-        style={{ background: ORANGE, paddingTop: "var(--nav-height)", minHeight: "100vh" }}
-      >
-        {/* ── Grain texture (matches Image 1 paper grain) ── */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: getGrainDataUri(0.75, 200),
-          opacity: 0.13, mixBlendMode: "overlay" as const,
-        }} />
-
-        {/* ── Large arc — top right (Image 1 reference) ── */}
-        <svg aria-hidden className="absolute pointer-events-none"
-          style={{ top: "-18%", right: "-10%", width: "52vw", height: "52vw", maxWidth: 620, maxHeight: 620 }}
-          viewBox="0 0 620 620" fill="none">
-          <circle cx="310" cy="310" r="290" stroke="rgba(255,255,255,0.18)" strokeWidth="80" fill="none" />
-        </svg>
-
-        {/* ── Medium arc — bottom right ── */}
-        <svg aria-hidden className="absolute pointer-events-none"
-          style={{ bottom: "-14%", right: "-6%", width: "28vw", height: "28vw", maxWidth: 340, maxHeight: 340 }}
-          viewBox="0 0 340 340" fill="none">
-          <circle cx="170" cy="170" r="150" stroke="rgba(255,255,255,0.14)" strokeWidth="50" fill="none" />
-        </svg>
-
-        {/* ── Diagonal cut — bottom left (Image 1 reference) ── */}
-        <svg aria-hidden className="absolute pointer-events-none"
-          style={{ bottom: 0, left: 0, width: "36vw", height: "36vw", maxWidth: 420, maxHeight: 420 }}
-          viewBox="0 0 420 420" fill="none">
-          <path d="M0,420 L280,420 L0,140 Z" fill="rgba(255,255,255,0.10)" />
-          <path d="M0,420 L180,420 L0,260 Z" fill="rgba(255,255,255,0.07)" />
-        </svg>
-
-        {/* ── Small arc — top left ── */}
-        <svg aria-hidden className="absolute pointer-events-none"
-          style={{ top: "-8%", left: "-8%", width: "20vw", height: "20vw", maxWidth: 220, maxHeight: 220 }}
-          viewBox="0 0 220 220" fill="none">
-          <circle cx="110" cy="110" r="95" stroke="rgba(255,255,255,0.11)" strokeWidth="38" fill="none" />
-        </svg>
-
-        {/* ── Dot grid accent ── */}
-        <div className="absolute pointer-events-none" style={{
-          top: "calc(var(--nav-height) + 24px)", left: "28px",
-          width: "80px", height: "80px",
-          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.35) 1.5px, transparent 1.5px)",
-          backgroundSize: "14px 14px",
-        }} />
-
-        {/* ── Ghost CIE watermark ── */}
-        <div className="absolute pointer-events-none select-none" style={{
-          bottom: "30px", right: "-8px",
-          fontFamily: "var(--font-heading)", fontWeight: 900,
-          fontSize: "clamp(160px, 28vw, 440px)",
-          color: "rgba(0,0,0,0.06)", lineHeight: 1, letterSpacing: "-0.06em",
-          userSelect: "none" as const,
-        }}>ACIC</div>
-
-        {/* ── Main content ── */}
-        <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
-          <div className={`${CONTAINER} w-full`} style={{ paddingTop: "clamp(32px,5vw,52px)", paddingBottom: "clamp(40px,6vw,60px)" }}>
-            <div className="w-full grid lg:grid-cols-2 items-center" style={{ gap: "clamp(40px, 8vw, 120px)" }}>
-
-              {/* ── LEFT: Text ── */}
-              <div style={{ position: "relative" }}>
-
-
-                {/* HUGE stacked display headline */}
-                <motion.h1
-                  initial={{ opacity: 0, y: 64 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.95, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                  style={{
-                    fontFamily: "var(--font-heading)", fontWeight: 900,
-                    fontSize: "clamp(44px, 8vw, 108px)",
-                    lineHeight: 0.86, letterSpacing: "-0.045em",
-                    textTransform: "uppercase" as const, marginBottom: 0,
-                  }}
-                >
-                  <span style={{ display: "block", color: "#FFFFFF" }}>EMPOWER</span>
-                  <span style={{
-                    display: "block", color: "transparent",
-                    WebkitTextStroke: "3px rgba(255,255,255,0.82)",
-                  }}>INNOVATE</span>
-                  <span style={{ display: "block", color: "#FFFFFF", fontSize: "0.62em" }}>FOR BHARATH</span>
-                </motion.h1>
-
-                {/* Handwritten script accent */}
-                <motion.p
-                  initial={{ opacity: 0, x: -18 }} animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.65, delay: 0.52 }}
-                  style={{
-                    fontFamily: "var(--font-script)",
-                    fontSize: "clamp(20px, 2.8vw, 34px)",
-                    color: "rgba(255,255,255,0.88)", lineHeight: 1.2,
-                    marginTop: "20px", marginBottom: "22px",
-                    display: "inline-block", transform: "rotate(-1.8deg)",
-                  }}
-                >
-                  — atal community innovation centre, mlrit
-                </motion.p>
-
-                {/* Body copy */}
-                <motion.p
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.65 }}
-                  style={{
-                    fontFamily: "var(--font-body)", fontSize: "clamp(14px, 1.5vw, 16px)",
-                    lineHeight: 1.78, color: "rgba(255,255,255,0.68)",
-                    maxWidth: "min(400px, 100%)", marginBottom: "14px",
-                  }}
-                >
-                  ACIC-MLRIT envisions creating a formal approach to identify, build, and
-                  nurture sustainable communities through innovation.
-                </motion.p>
-
-                <motion.p
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.70 }}
-                  style={{
-                    fontFamily: "var(--font-body)", fontSize: "clamp(14px, 1.5vw, 16px)",
-                    lineHeight: 1.78, color: "rgba(255,255,255,0.68)",
-                    maxWidth: "min(400px, 100%)", marginBottom: "36px",
-                  }}
-                >
-                  Applications for the ACIC-MLRIT Pre-Incubation Cohort are open. Apply
-                  soon to secure your spot!
-                </motion.p>
-
-                {/* CTAs */}
-                <motion.div
-                  initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.55, delay: 0.78 }}
-                  style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}
-                >
-                  <Link href="/programs" style={{
-                    display: "inline-flex", alignItems: "center", gap: "6px",
-                    background: "transparent", color: "#FFFFFF",
-                    fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "14.5px",
-                    padding: "13px 22px", borderRadius: "999px", textDecoration: "none",
-                    border: "1.5px solid rgba(255,255,255,0.38)",
-                  }}>
-                    Our Programs <ChevronRight size={15} />
-                  </Link>
-                  <Link href="/about" style={{
-                    display: "inline-flex", alignItems: "center", gap: "6px",
-                    background: "transparent", color: "rgba(255,255,255,0.55)",
-                    fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "14.5px",
-                    padding: "13px 22px", borderRadius: "999px", textDecoration: "none",
-                  }}>
-                    About ACIC <ChevronRight size={15} />
-                  </Link>
-                </motion.div>
-
-              </div>
-
-              {/* ── RIGHT: Polaroid collage + CIE brand badge ── */}
-              <div className="hidden lg:block" style={{ position: "relative", height: "660px" }}>
-
-                {/* Polaroid 1 — large, tilted left */}
-                <motion.div
-                  initial={{ opacity: 0, rotate: -18, y: 44 }} animate={{ opacity: 1, rotate: -8, y: 0 }}
-                  transition={{ duration: 1.05, delay: 0.30, ease: [0.16, 1, 0.3, 1] }}
-                  style={{
-                    position: "absolute", top: "10px", left: "4%",
-                    width: "212px", height: "270px", background: "#FFFFFF",
-                    borderRadius: "3px", padding: "10px 10px 44px",
-                    boxShadow: "0 24px 64px rgba(0,0,0,0.30), 0 6px 16px rgba(0,0,0,0.14)",
-                    zIndex: 3,
-                  }}
-                >
-                  <div style={{
-                    width: "100%", height: "100%", borderRadius: "2px",
-                    position: "relative", overflow: "hidden",
-                    display: "flex", flexDirection: "column" as const,
-                    alignItems: "center", justifyContent: "flex-end", padding: "14px",
-                  }}>
-                    <Image
-                      src="/gallery/innovation-challenge.jpg"
-                      alt="Innovation Challenge"
-                      fill
-                      sizes="212px"
-                      style={{ objectFit: "cover", zIndex: 0 }}
-                    />
-                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)", zIndex: 1 }} />
-                    <span style={{ position: "relative", zIndex: 2, fontFamily: "var(--font-body)", fontSize: "9px", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "rgba(255,255,255,0.85)" }}>
-                      INNOVATION LAB
-                    </span>
-                  </div>
-                  <p style={{
-                    fontFamily: "var(--font-script)", fontSize: "14px",
-                    color: "#94A3B8", textAlign: "center" as const, marginTop: "9px", lineHeight: 1.2,
-                  }}>build &amp; create ✦</p>
-                </motion.div>
-
-                {/* Polaroid 2 — medium, tilted right */}
-                <motion.div
-                  initial={{ opacity: 0, rotate: 16, y: 44 }} animate={{ opacity: 1, rotate: 7, y: 0 }}
-                  transition={{ duration: 1.05, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  style={{
-                    position: "absolute", top: "48px", right: "3%",
-                    width: "178px", height: "228px", background: "#FFFFFF",
-                    borderRadius: "3px", padding: "9px 9px 36px",
-                    boxShadow: "0 20px 52px rgba(0,0,0,0.26), 0 4px 12px rgba(0,0,0,0.12)",
-                    zIndex: 4,
-                  }}
-                >
-                  <div style={{
-                    width: "100%", height: "100%", borderRadius: "2px",
-                    position: "relative", overflow: "hidden",
-                    display: "flex", flexDirection: "column" as const,
-                    alignItems: "center", justifyContent: "flex-end", padding: "12px",
-                  }}>
-                    <Image
-                      src="/gallery/startup-lab.jpg"
-                      alt="Startup Lab"
-                      fill
-                      sizes="178px"
-                      style={{ objectFit: "cover", zIndex: 0 }}
-                    />
-                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)", zIndex: 1 }} />
-                    <span style={{ position: "relative", zIndex: 2, fontFamily: "var(--font-body)", fontSize: "9px", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "rgba(255,255,255,0.85)" }}>
-                      STARTUP LAB
-                    </span>
-                  </div>
-                  <p style={{
-                    fontFamily: "var(--font-script)", fontSize: "14px",
-                    color: "#94A3B8", textAlign: "center" as const, marginTop: "9px",
-                  }}>pre-incubation ★</p>
-                </motion.div>
-
-                {/* Polaroid 3 — small square */}
-                <motion.div
-                  initial={{ opacity: 0, rotate: 8, y: 32 }} animate={{ opacity: 1, rotate: 4, y: 0 }}
-                  transition={{ duration: 0.9, delay: 0.58, ease: [0.16, 1, 0.3, 1] }}
-                  style={{
-                    position: "absolute", top: "310px", left: "calc(50% - 160px)",
-                    width: "320px", height: "320px", background: "#FFFFFF",
-                    borderRadius: "3px", padding: "14px 14px 44px",
-                    boxShadow: "0 16px 44px rgba(0,0,0,0.22)", zIndex: 5,
-                  }}
-                >
-                  <div style={{
-                    width: "100%", height: "100%", borderRadius: "2px",
-                    position: "relative", overflow: "hidden",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                  }}>
-                    <Image
-                      src="/gallery/innovation-challenge-group.jpg"
-                      alt="Innovation Challenge"
-                      fill
-                      sizes="320px"
-                      style={{ objectFit: "cover" }}
-                    />
-                  </div>
-                </motion.div>
-
-                {/* Star ✦ decorations */}
-                {([
-                  { top: "6px",    left: "52%",  size: 26, delay: 0.86 },
-                  { top: "44%",    left: "-3%",  size: 16, delay: 0.96 },
-                  { bottom: "34%", right: "40%", size: 22, delay: 1.06 },
-                  { top: "28%",    right: "47%", size: 12, delay: 1.15 },
-                ] as { top?: string; left?: string; bottom?: string; right?: string; size: number; delay: number }[]).map((star, i) => (
-                  <motion.span
-                    key={i}
-                    initial={{ opacity: 0, scale: 0, rotate: -30 }}
-                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                    transition={{ duration: 0.5, delay: star.delay }}
-                    style={{
-                      position: "absolute",
-                      top:    star.top,
-                      left:   star.left,
-                      bottom: star.bottom,
-                      right:  star.right,
-                      fontSize: `${star.size}px`,
-                      color: "rgba(255,255,255,0.82)",
-                      pointerEvents: "none", display: "block",
-                    }}
-                  >✦</motion.span>
-                ))}
-
-                {/* 3×3 dot cluster */}
-                <motion.div
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  transition={{ delay: 1.10 }}
-                  style={{
-                    position: "absolute", top: "18px", right: "30%",
-                    display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "5px",
-                    pointerEvents: "none",
-                  }}
-                >
-                  {Array.from({ length: 9 }).map((_, i) => (
-                    <div key={i} style={{ width: "4px", height: "4px", borderRadius: "50%", background: "rgba(0,0,0,0.22)" }} />
-                  ))}
-                </motion.div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </section>
-
-      {/* ────────────────────────────────────────────────────────────
-          STATS  —  #FFFFFF (Light Orange Background)
-      ──────────────────────────────────────────────────────────── */}
-      <section style={{ background: BG_CREAM, paddingTop: SECTION_PY, paddingBottom: SECTION_PY }}>
-        <div className={CONTAINER}>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 items-stretch justify-items-stretch">
-            {stats.map((stat, i) => (
-              <FadeIn key={stat.label} delay={i * 0.08}>
-                <div className="card-light flex flex-col items-center text-center" style={{ gap: "14px", padding: "clamp(16px,4vw,32px)" }}>
-                  <div
-                    style={{
-                      width: "48px", height: "48px", borderRadius: "12px",
-                      background: `${stat.color}14`,
-                      border: `1px solid ${stat.color}28`,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                    }}
-                  >
-                    <stat.icon size={21} style={{ color: stat.color }} />
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-heading)",
-                      fontWeight: 800,
-                      fontSize: "clamp(30px, 4vw, 42px)",
-                      lineHeight: 1,
-                      color: stat.color,
-                      letterSpacing: "-0.03em",
-                    }}
-                  >
-                    <AnimatedCounter end={stat.value} suffix={stat.suffix} />
-                  </div>
-                  <p
-                    style={{
-                      fontFamily: "var(--font-body)",
-                      fontSize: "13.5px",
-                      fontWeight: 500,
-                      color: T_MUTED,
-                    }}
-                  >
-                    {stat.label}
-                  </p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <SectionDivider topBg="#FFFFFF" btmBg="#FFFFFF" />
-
-      {/* ────────────────────────────────────────────────────────────
-          VISION & MISSION  —  #FFFFFF (White)
-      ──────────────────────────────────────────────────────────── */}
-      <section style={{ background: BG_WHITE, paddingTop: SECTION_PY, paddingBottom: SECTION_PY }}>
-        <div className={CONTAINER}>
-          <FadeIn>
-            <span className="section-tag">Our Purpose</span>
-            <h2
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontWeight: 800,
-                fontSize: "clamp(34px, 4vw, 50px)",
-                letterSpacing: "-0.03em",
-                color: T_PRIMARY,
-                maxWidth: "620px",
-                marginBottom: "20px",
-              }}
-            >
-              About ACIC MLRIT
-            </h2>
-            <p style={{
-              fontFamily: "var(--font-body)", fontSize: "16px", lineHeight: 1.8,
-              color: T_MED, maxWidth: "980px", marginBottom: "clamp(28px,5vw,52px)",
-            }}>
-              Atal Innovation Mission (AIM) at NITI Aayog is mandated to promote a culture of
-              innovation and entrepreneurship in India. AIM has selected a number of institutions
-              for supporting them in establishing Atal Community Innovation Centres (ACICs). MLRIT
-              has been selected by AIM and received approval for the establishment of an Atal
-              Community Innovation Centre at the MLRIT campus.
-            </p>
-          </FadeIn>
-
-          <div className="grid md:grid-cols-2 gap-6 items-stretch">
-            {[
-              {
-                title: "Our Vision",
-                content:
-                  "ACIC-MLRIT's vision is to encourage a spirit of entrepreneurship in the underserved and unserved regions by providing enabling infrastructure and facilitating an environment for innovations.",
-              },
-              {
-                title: "Our Objectives",
-                content:
-                  "To build an innovative mindset in the community, enhance the knowledge, skills and abilities to develop innovative products, promote design thinking with infrastructure for prototypes and MVPs, build a vibrant startup ecosystem with sector-specific expert mentors, and provide Legal, IPR, Funding and Market Access support to help innovators become sustainable startups.",
-              },
-            ].map((item, i) => (
-              <FadeIn key={item.title} delay={i * 0.12}>
-                <div className="card-light h-full" style={{ padding: "clamp(24px,4vw,40px) clamp(20px,4vw,44px)" }}>
-                  <div
-                    style={{
-                      width: "36px",
-                      height: "3px",
-                      background: ORANGE,
-                      borderRadius: "2px",
-                      marginBottom: "22px",
-                    }}
-                  />
-                  <h3
-                    style={{
-                      fontFamily: "var(--font-heading)",
-                      fontWeight: 800,
-                      fontSize: "22px",
-                      letterSpacing: "-0.02em",
-                      color: T_SECONDARY,
-                      marginBottom: "14px",
-                    }}
-                  >
-                    {item.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontFamily: "var(--font-body)",
-                      fontSize: "16px",
-                      lineHeight: 1.78,
-                      color: T_MED,
-                    }}
-                  >
-                    {item.content}
-                  </p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <SectionDivider topBg="#FFFFFF" btmBg="#FFFFFF" />
-
-      {/* ────────────────────────────────────────────────────────────
-          WHAT WE DO  —  #FFFFFF (Warm Neutral)
-      ──────────────────────────────────────────────────────────── */}
-      <section style={{ background: BG_WARM, paddingTop: SECTION_PY, paddingBottom: SECTION_PY }}>
-        <div className={CONTAINER}>
-          <FadeIn className="text-center mb-8 lg:mb-16">
-            <span className="section-tag">What We Do</span>
-            <h2
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontWeight: 800,
-                fontSize: "clamp(34px, 4vw, 50px)",
-                letterSpacing: "-0.03em",
-                color: T_PRIMARY,
-                marginTop: "4px",
-              }}
-            >
-              For Innovators & Startups
-            </h2>
-            <p style={{
-              fontFamily: "var(--font-body)", fontSize: "16px", lineHeight: 1.8,
-              color: T_MUTED, maxWidth: "920px", margin: "16px auto 0",
-            }}>
-              Whether you have an idea, a prototype or a growing startup, ACIC-MLRIT provides
-              the structure, infrastructure and network to turn it into a sustainable venture
-              across Agriculture, Art & Culture, Social Impact, Sustainability and Technology.
-            </p>
-          </FadeIn>
-
-          <div className="grid sm:grid-cols-2 gap-6 items-stretch">
-            {studios.map((studio, i) => (
-              <FadeIn key={studio.name} delay={i * 0.08}>
-                <div
-                  className="card-light h-full"
-                  style={{
-                    padding: "clamp(20px,3vw,32px)",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  {/* Icon */}
-                  <div style={{
-                    width: "64px", height: "64px", borderRadius: "18px",
-                    background: `${studio.color}12`,
-                    border: `1px solid ${studio.color}28`,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    flexShrink: 0, marginBottom: "24px",
-                  }}>
-                    <studio.icon size={24} style={{ color: studio.color }} />
-                  </div>
-                  {/* Title */}
-                  <h3 style={{
-                    fontFamily: "var(--font-heading)",
-                    fontWeight: 700,
-                    fontSize: "clamp(20px,2.5vw,28px)",
-                    lineHeight: 1.25,
-                    letterSpacing: "-0.02em",
-                    color: T_SECONDARY,
-                    marginBottom: "20px",
-                  }}>
-                    {studio.name}
-                  </h3>
-                  {/* Description */}
-                  <p style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: "17px",
-                    lineHeight: 1.8,
-                    color: T_MUTED,
-                    flex: 1,
-                  }}>
-                    {studio.desc}
-                  </p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <SectionDivider topBg="#FFFFFF" btmBg="#FFF5F0" />
-
-      {/* ────────────────────────────────────────────────────────────
-          TIMELINE  —  Soft Peach Background
-      ──────────────────────────────────────────────────────────── */}
-      <section style={{ background: "#FFF5F0", paddingTop: SECTION_PY, paddingBottom: SECTION_PY, position: "relative", overflow: "hidden" }}>
-        {/* Blob left */}
-        <div style={{ position: "absolute", left: "-140px", top: "50%", transform: "translateY(-50%)", width: "340px", height: "420px", borderRadius: "50%", background: "rgba(251,146,100,0.18)", filter: "blur(72px)", pointerEvents: "none" }} />
-        {/* Blob right */}
-        <div style={{ position: "absolute", right: "-140px", top: "50%", transform: "translateY(-50%)", width: "340px", height: "420px", borderRadius: "50%", background: "rgba(251,146,100,0.18)", filter: "blur(72px)", pointerEvents: "none" }} />
-        {/* Dot grid top-left */}
-        <div style={{ position: "absolute", top: 0, left: 0, width: "180px", height: "180px", backgroundImage: "radial-gradient(circle, rgba(0,0,0,0.12) 1px, transparent 1px)", backgroundSize: "18px 18px", pointerEvents: "none" }} />
-        {/* Dot grid top-right */}
-        <div style={{ position: "absolute", top: 0, right: 0, width: "180px", height: "180px", backgroundImage: "radial-gradient(circle, rgba(0,0,0,0.12) 1px, transparent 1px)", backgroundSize: "18px 18px", pointerEvents: "none" }} />
-
-        <div className={CONTAINER} style={{ position: "relative", zIndex: 1 }}>
-          <FadeIn className="text-center mb-20 lg:mb-24">
-            <span style={{
-              display: "inline-flex", alignItems: "center",
-              background: "rgba(234,88,12,0.10)", border: "none",
-              color: "#EA580C", padding: "0.32rem 0.9rem", borderRadius: "999px",
-              fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.07em",
-              textTransform: "uppercase", marginBottom: "1.25rem",
-              fontFamily: "var(--font-body)",
-            }}>Your Journey</span>
-            <h2 style={{
-              fontFamily: "var(--font-heading)", fontWeight: 800,
-              fontSize: "clamp(34px, 4vw, 50px)", letterSpacing: "-0.03em",
-              color: T_PRIMARY, marginTop: "0",
-            }}>
-              From Idea to Startup
-            </h2>
-            <p style={{
-              fontFamily: "var(--font-body)", fontSize: "16px",
-              color: T_MUTED, marginTop: "16px", lineHeight: 1.7,
-              maxWidth: "820px", marginLeft: "auto", marginRight: "auto",
-            }}>
-              Our pre-incubation modules take you from understanding your customers to a
-              working business model, and incubation takes your venture to market.
-            </p>
-          </FadeIn>
-
-          <div className="relative" style={{ marginTop: "56px" }}>
-            {/* Horizontal connector line */}
-            <div className="absolute hidden lg:block" style={{
-              top: "32px", left: "10%", right: "10%", height: "1px",
-              background: "rgba(0,0,0,0.15)", zIndex: 0,
-            }} />
-            {/* Orange midpoint dots */}
-            {[20, 40, 60, 80].map((pct) => (
-              <div key={pct} className="absolute hidden lg:block" style={{
-                top: "28px", left: `${pct}%`, transform: "translateX(-50%)",
-                width: "8px", height: "8px", borderRadius: "50%",
-                background: "#EA580C", zIndex: 2,
-              }} />
-            ))}
-
-            <div
-              ref={timelineScrollRef}
-              onScroll={updateTimelineEdge}
-              className="flex overflow-x-auto snap-x snap-mandatory gap-12 pb-2 lg:pb-0 lg:grid lg:grid-cols-5 lg:gap-8 lg:overflow-visible"
-              style={{ scrollbarWidth: "none", overflowAnchor: "none" }}
-            >
-              <div aria-hidden className="shrink-0 lg:hidden" style={{ width: "calc(50vw - 130px)" }} />
-              {timeline.map((item, i) => (
-                <FadeIn key={item.step} delay={i * 0.12} className="shrink-0 w-[70vw] max-w-[260px] snap-center lg:w-auto lg:max-w-none">
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "32px" }}>
-                    {/* Circle */}
-                    <div style={{
-                      width: "64px", height: "64px", borderRadius: "50%",
-                      background: item.color, flexShrink: 0,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      position: "relative", zIndex: 10,
-                      fontFamily: "var(--font-heading)", fontWeight: 800,
-                      fontSize: "17px", color: "#FFFFFF",
-                    }}>
-                      {item.step}
-                    </div>
-                    {/* Content */}
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
-                      {/* Icon */}
-                      <div style={{
-                        width: "64px", height: "64px", borderRadius: "18px",
-                        background: `${item.color}12`,
-                        border: `1px solid ${item.color}28`,
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                      }}>
-                        <item.icon size={28} style={{ color: item.color }} />
-                      </div>
-                      {/* Title */}
-                      <h3 style={{
-                        fontFamily: "var(--font-heading)", fontWeight: 700,
-                        fontSize: "26px", letterSpacing: "-0.02em",
-                        color: T_SECONDARY, marginTop: "24px",
-                      }}>
-                        {item.title}
-                      </h3>
-                      {/* Description */}
-                      <p style={{
-                        fontFamily: "var(--font-body)", fontSize: "16px",
-                        lineHeight: 1.7, color: T_MUTED,
-                        marginTop: "16px", maxWidth: "220px",
-                      }}>
-                        {item.desc}
-                      </p>
-                    </div>
-                  </div>
-                </FadeIn>
-              ))}
-              <div aria-hidden className="shrink-0 lg:hidden" style={{ width: "calc(50vw - 130px)" }} />
-            </div>
-
-            {/* Prev/next arrows — mobile carousel only, hidden at each end */}
-            {!timelineEdge.atStart && (
-              <button
-                type="button"
-                aria-label="Previous step"
-                onClick={() => scrollTimeline(-1)}
-                className="lg:hidden absolute z-20 flex items-center justify-center"
-                style={{
-                  left: "4px", top: "28px", width: "40px", height: "40px",
-                  borderRadius: "50%", background: "#FFFFFF",
-                  border: "1px solid rgba(0,0,0,0.10)", boxShadow: "0 4px 14px rgba(0,0,0,0.10)",
-                }}
-              >
-                <ChevronLeft size={20} style={{ color: T_SECONDARY }} />
-              </button>
-            )}
-            {!timelineEdge.atEnd && (
-              <button
-                type="button"
-                aria-label="Next step"
-                onClick={() => scrollTimeline(1)}
-                className="lg:hidden absolute z-20 flex items-center justify-center"
-                style={{
-                  right: "4px", top: "28px", width: "40px", height: "40px",
-                  borderRadius: "50%", background: "#FFFFFF",
-                  border: "1px solid rgba(0,0,0,0.10)", boxShadow: "0 4px 14px rgba(0,0,0,0.10)",
-                }}
-              >
-                <ChevronRight size={20} style={{ color: T_SECONDARY }} />
-              </button>
-            )}
-          </div>
-        </div>
-      </section>
-
-      <SectionDivider topBg="#FFF5F0" btmBg="#FFFFFF" />
-
-      {/* ────────────────────────────────────────────────────────────
-          FEATURED PROGRAMS  —  #FFFFFF (Light Orange Background)
-      ──────────────────────────────────────────────────────────── */}
-      <section style={{ background: BG_CREAM, paddingTop: SECTION_PY, paddingBottom: SECTION_PY }}>
-        <div className={CONTAINER}>
-          <FadeIn>
-            <div
-              className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
-              style={{ marginBottom: "clamp(28px,5vw,52px)" }}
-            >
-              <div>
-                <span style={{
-                  display: "inline-flex", alignItems: "center",
-                  background: "rgba(234,88,12,0.08)", border: "1px solid rgba(234,88,12,0.20)",
-                  color: "#EA580C", padding: "0.32rem 0.9rem", borderRadius: "999px",
-                  fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.07em",
-                  textTransform: "uppercase", marginBottom: "1rem",
-                  fontFamily: "var(--font-body)",
-                }}>Programs</span>
-                <h2
-                  style={{
-                    fontFamily: "var(--font-heading)",
-                    fontWeight: 800,
-                    fontSize: "clamp(34px, 4vw, 50px)",
-                    letterSpacing: "-0.03em",
-                    color: T_PRIMARY,
-                    marginTop: "4px",
-                  }}
-                >
-                  Featured Programs
-                </h2>
-                <p style={{
-                  fontFamily: "var(--font-body)", fontSize: "16px", color: T_MUTED,
-                  marginTop: "10px", maxWidth: "640px", lineHeight: 1.7,
-                }}>
-                  Programs for students, rural youth, community innovators and early-stage
-                  startups, supported by Atal Innovation Mission, NITI Aayog.
-                </p>
-              </div>
-              <Link href="/programs" className="btn-secondary-light whitespace-nowrap flex-shrink-0">
-                All Programs <ArrowRight size={16} />
-              </Link>
-            </div>
-          </FadeIn>
-
-          <div className="grid sm:grid-cols-2 gap-6 items-stretch">
-            {programs.map((prog, i) => (
-              <FadeIn key={prog.title} delay={i * 0.08}>
-                <div className="card-light h-full" style={{ padding: "clamp(20px,3vw,32px)" }}>
-                  <div className="flex items-start gap-4">
-                    {/* Icon — left */}
-                    <div style={{
-                      width: "68px", height: "68px", borderRadius: "16px",
-                      background: `${prog.color}12`,
-                      border: `1px solid ${prog.color}28`,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      flexShrink: 0,
-                    }}>
-                      <prog.icon size={28} style={{ color: prog.color }} />
-                    </div>
-                    {/* Text — right */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-3" style={{ marginBottom: "10px" }}>
-                        <h3 style={{
-                          fontFamily: "var(--font-heading)",
-                          fontWeight: 800,
-                          fontSize: "18px",
-                          letterSpacing: "-0.02em",
-                          color: T_SECONDARY,
-                        }}>
-                          {prog.title}
-                        </h3>
-                        <span style={{
-                          fontFamily: "var(--font-body)",
-                          fontSize: "10px",
-                          fontWeight: 700,
-                          letterSpacing: "0.08em",
-                          textTransform: "uppercase" as const,
-                          color: prog.color,
-                          background: `${prog.color}10`,
-                          border: `1px solid ${prog.color}28`,
-                          padding: "3px 10px",
-                          borderRadius: "999px",
-                          whiteSpace: "nowrap" as const,
-                          flexShrink: 0,
-                        }}>
-                          {prog.tag}
-                        </span>
-                      </div>
-                      <p style={{
-                        fontFamily: "var(--font-body)",
-                        fontSize: "14.5px",
-                        lineHeight: 1.72,
-                        color: T_MED,
-                      }}>
-                        {prog.desc}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <SectionDivider topBg="#FFFFFF" btmBg="#F5F5F5" />
-
-      {/* ────────────────────────────────────────────────────────────
-          FACILITIES  —  #F5F5F5
-      ──────────────────────────────────────────────────────────── */}
-      <section style={{ background: "#F5F5F5", paddingTop: SECTION_PY, paddingBottom: SECTION_PY }}>
-        <div className={CONTAINER}>
-          <FadeIn>
-            <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6" style={{ marginBottom: "clamp(28px,5vw,52px)" }}>
-              <div>
-                <span className="section-tag">Infrastructure</span>
-                <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "clamp(34px, 4vw, 50px)", letterSpacing: "-0.03em", color: T_PRIMARY, marginTop: "4px" }}>
-                  Makerspace & Sector Labs
-                </h2>
-                <p style={{ fontFamily: "var(--font-body)", fontSize: "16px", color: T_MUTED, marginTop: "10px", maxWidth: "480px", lineHeight: 1.7 }}>
-                  Fully equipped labs to design, develop and test your prototypes.
-                </p>
-              </div>
-              <Link href="/about#facilities" className="btn-secondary-light whitespace-nowrap flex-shrink-0">
-                All Facilities <ArrowRight size={16} />
-              </Link>
-            </div>
-          </FadeIn>
-
-          <div
-            style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}
-            className="home-facilities-grid"
-          >
-            {homeFacilities.map((f, i) => (
-              <FadeIn key={f.title} delay={i * 0.07}>
-                <div
-                  style={{
-                    background: "#FFFFFF",
-                    borderRadius: "14px",
-                    border: "1px solid rgba(0,0,0,0.08)",
-                    padding: "36px 28px 32px",
-                    textAlign: "center",
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    transition: "box-shadow 0.25s ease, transform 0.25s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 32px rgba(0,0,0,0.10)";
-                    (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = "none";
-                    (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
-                  }}
-                >
-                  <div style={{ marginBottom: "18px" }}>
-                    <f.icon size={42} strokeWidth={1.6} style={{ color: "#111111" }} />
-                  </div>
-                  <h3 style={{ fontSize: "17px", fontWeight: 700, color: "#111111", marginBottom: "12px", letterSpacing: "-0.01em" }}>
-                    {f.title}
-                  </h3>
-                  <p style={{ fontSize: "13.5px", lineHeight: 1.72, color: "#555555" }}>
-                    {f.desc}
-                  </p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-      <style>{`
-        @media (max-width: 900px) { .home-facilities-grid { grid-template-columns: repeat(2,1fr) !important; } }
-        @media (max-width: 560px) { .home-facilities-grid { grid-template-columns: 1fr !important; } }
-      `}</style>
-
-      <SectionDivider topBg="#F5F5F5" btmBg="#FFFFFF" />
-
-      {/* ────────────────────────────────────────────────────────────
-          CTA  —  warm light gradient (#FFFFFF → #FFFFFF)
-          Orange used only on heading accent + primary button
-      ──────────────────────────────────────────────────────────── */}
-      <section
-        className="relative overflow-hidden"
-        style={{
-          background: `linear-gradient(160deg, ${BG_CREAM} 0%, ${BG_SURFACE} 50%, ${BG_WARM} 100%)`,
-          paddingTop: SECTION_PY,
-          paddingBottom: SECTION_PY,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {/* Decorative layer — symmetrical left + right, z-0 */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-          {/* Concentric rings — bottom-right */}
-          <svg className="absolute -bottom-20 -right-20 opacity-[0.25]" width="480" height="480" viewBox="0 0 480 480">
-            <circle cx="240" cy="240" r="220" fill="none" stroke={ORANGE} strokeWidth="1.2" />
-            <circle cx="240" cy="240" r="160" fill="none" stroke={ORANGE} strokeWidth="0.8" />
-            <circle cx="240" cy="240" r="100" fill="none" stroke={ORANGE} strokeWidth="0.7" />
-            <circle cx="240" cy="240" r="50"  fill="none" stroke={ORANGE} strokeWidth="0.6" />
-          </svg>
-          {/* Concentric rings — top-left (mirror) */}
-          <svg className="absolute -top-20 -left-20 opacity-[0.25]" width="480" height="480" viewBox="0 0 480 480">
-            <circle cx="240" cy="240" r="220" fill="none" stroke={ORANGE} strokeWidth="1.2" />
-            <circle cx="240" cy="240" r="160" fill="none" stroke={ORANGE} strokeWidth="0.8" />
-            <circle cx="240" cy="240" r="100" fill="none" stroke={ORANGE} strokeWidth="0.7" />
-            <circle cx="240" cy="240" r="50"  fill="none" stroke={ORANGE} strokeWidth="0.6" />
-          </svg>
-          {/* Centre hexagon */}
-          <svg className="absolute opacity-[0.10]" style={{ top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} width="600" height="600" viewBox="0 0 600 600">
-            <polygon points="300,20 565,165 565,435 300,580 35,435 35,165" fill="none" stroke={ORANGE} strokeWidth="1.2" />
-            <polygon points="300,110 490,220 490,380 300,490 110,380 110,220" fill="none" stroke={ORANGE} strokeWidth="0.8" />
-          </svg>
-          {/* Symmetrical floating dots */}
-          {([
-            { s: 6, t: "22%", l: "8%",  o: 0.20 },
-            { s: 4, t: "65%", l: "12%", o: 0.15 },
-            { s: 6, t: "22%", r: "8%",  o: 0.20 },
-            { s: 4, t: "65%", r: "12%", o: 0.15 },
-            { s: 5, t: "45%", l: "5%",  o: 0.12 },
-            { s: 5, t: "45%", r: "5%",  o: 0.12 },
-          ] as { s: number; t: string; l?: string; r?: string; o: number }[]).map((dot, k) => (
-            <div key={k} className="absolute rounded-full" style={{
-              width: dot.s, height: dot.s,
-              background: ORANGE, opacity: dot.o, top: dot.t,
-              left: dot.l, right: dot.r,
-            }} />
-          ))}
-        </div>
-
-        {/* CTA content — true center */}
-        <div style={{ position: "relative", zIndex: 10, width: "100%" }}>
-        <FadeIn>
-          <div style={{
-            maxWidth: "900px",
-            width: "100%",
-            margin: "0 auto",
-            padding: "0 1.25rem",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            textAlign: "center",
-          }}>
-            {/* Label pill */}
-            <span
-              className="inline-flex items-center gap-2"
-              style={{
-                background: "rgba(255,94,44,0.10)",
-                border: "1px solid rgba(255,94,44,0.22)",
-                color: ORANGE,
-                padding: "0.32rem 0.9rem",
-                borderRadius: "999px",
-                fontSize: "0.72rem",
-                fontFamily: "var(--font-body)",
-                fontWeight: 700,
-                letterSpacing: "0.07em",
-                textTransform: "uppercase",
-                marginBottom: "32px",
-              }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: ORANGE }} />
-              ACIC · MLRIT
-            </span>
-
-            {/* Headline */}
-            <h2
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontWeight: 800,
-                fontSize: "clamp(38px, 5.5vw, 64px)",
-                letterSpacing: "-0.03em",
-                color: T_PRIMARY,
-                lineHeight: 1.08,
-                marginBottom: "32px",
-              }}
-            >
-              Ready to Build{" "}
-              <span style={{ color: ORANGE }}>for Bharath?</span>
-            </h2>
-
-            {/* Tagline */}
-            <p style={{
-              fontFamily: "var(--font-heading)", fontWeight: 700,
-              fontSize: "clamp(15px, 1.6vw, 18px)", letterSpacing: "-0.01em",
-              color: ORANGE, marginBottom: "20px",
-            }}>
-              Identify. Build. Nurture.
-            </p>
-
-            {/* Subtext */}
-            <p
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "18px",
-                lineHeight: 1.72,
-                color: T_MED,
-                maxWidth: "820px",
-                marginBottom: "40px",
-              }}
-            >
-              Whether you have an idea, a prototype or a growing startup, ACIC-MLRIT gives
-              you the mentors, makerspace and network to turn it into a sustainable venture
-              that serves your community.
-            </p>
-
-            {/* Buttons */}
-            <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
-              <Link
-                href="/programs"
-                className="inline-flex items-center gap-2 rounded-[10px] transition-all duration-200"
-                style={{
-                  fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "1rem",
-                  padding: "0.9rem 2.25rem", background: "transparent",
-                  color: NAVY, border: `1.5px solid ${NAVY}30`,
-                  letterSpacing: "-0.01em", textDecoration: "none",
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.color = ORANGE; e.currentTarget.style.background = "rgba(255,94,44,0.04)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = `${NAVY}30`; e.currentTarget.style.color = NAVY; e.currentTarget.style.background = "transparent"; }}
-              >
-                Explore Programs <ChevronRight size={18} />
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 rounded-[10px] transition-all duration-200"
-                style={{
-                  fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "1rem",
-                  padding: "0.9rem 2.25rem", background: "transparent",
-                  color: NAVY, border: `1.5px solid ${NAVY}30`,
-                  letterSpacing: "-0.01em", textDecoration: "none",
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.color = ORANGE; e.currentTarget.style.background = "rgba(255,94,44,0.04)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = `${NAVY}30`; e.currentTarget.style.color = NAVY; e.currentTarget.style.background = "transparent"; }}
-              >
-                Get in Touch <ChevronRight size={18} />
-              </Link>
-            </div>
-          </div>
-        </FadeIn>
-        </div>
-      </section>
+    <div className="pol" >
+      <figure className="p1"><img src="/gallery/innovation-challenge.jpg" alt="Students at the MLRIT Innovation Challenge" width="900" height="600" /><figcaption>Innovation Challenge</figcaption></figure>
+      <figure className="p2"><img src="/gallery/startup-lab.jpg" alt="Founders working in the MLRIT startup lab" width="900" height="600" /><figcaption>Startup Lab</figcaption></figure>
+      <figure className="p3"><img src="/gallery/innovation-challenge-group.jpg" alt="Group photo of MLRIT innovators" width="700" height="466" /><figcaption>Our community</figcaption></figure>
     </div>
+  </div>
+</section>
+
+<section className="stats" aria-label="At a glance">
+  <div className="wrap">
+    <div className="statrow">
+      <div className="card stat rv"><div className="n" data-n="5">0</div><div className="t">Focus areas</div></div>
+      <div className="card stat rv" style={{"--i": "1"} as React.CSSProperties}><div className="n" data-n="8" data-s="+">0</div><div className="t">Programs</div></div>
+      <div className="card stat rv" style={{"--i": "2"} as React.CSSProperties}><div className="n" data-n="3">0</div><div className="t">Month pre-incubation</div></div>
+      <div className="card stat rv" style={{"--i": "3"} as React.CSSProperties}><div className="n" data-n="6">0</div><div className="t">Month incubation</div></div>
+    </div>
+    <p className="notice rv"><MegaphoneSimple style={{"color": "var(--o)", "fontSize": "20px"} as React.CSSProperties} /><span><b>Pre-Incubation cohort applications are open.</b> Apply soon to secure your spot.</span></p>
+  </div>
+</section>
+
+<section id="about">
+  <div className="wrap">
+    <div className="about">
+      <div>
+        <span className="chip rv">Our purpose</span>
+        <h2 className="rv">About ACIC MLRIT</h2>
+        <p className="lead rv">Atal Innovation Mission (AIM), NITI Aayog, promotes a culture of innovation and entrepreneurship across India by supporting institutions to set up Atal Community Innovation Centres. MLRIT was selected by AIM and approved to establish an ACIC on its campus.</p>
+        <p className="vision rv">Our vision is to encourage entrepreneurship in underserved regions by providing enabling infrastructure and an environment for innovation.</p>
+      </div>
+      <img className="rv" src="/gallery/innovation-challenge-group.jpg" alt="MLRIT innovators gathered at an innovation event" width="700" height="466" loading="lazy" />
+    </div>
+    <div className="objs">
+      <div className="rv"><Lightbulb /><h3>Innovative mindset</h3><p>Build an innovative mindset and the drive for entrepreneurship in the community.</p></div>
+      <div className="rv" style={{"--i": "1"} as React.CSSProperties}><GraduationCap /><h3>Knowledge and skills</h3><p>Grow the knowledge, skills and abilities needed to build new products and services.</p></div>
+      <div className="rv" style={{"--i": "2"} as React.CSSProperties}><Cube /><h3>Design and prototyping</h3><p>Promote design thinking with infrastructure for prototypes and MVPs.</p></div>
+      <div className="rv"><Network /><h3>Startup ecosystem</h3><p>Connect academia, industry, incubators, financiers and Government.</p></div>
+      <div className="rv" style={{"--i": "1"} as React.CSSProperties}><UsersThree /><h3>Expert mentors</h3><p>Build a sector-specific mentor pool from academia and industry.</p></div>
+      <div className="rv" style={{"--i": "2"} as React.CSSProperties}><Scales /><h3>Support services</h3><p>Legal, IPR, funding and market access to make startups sustainable.</p></div>
+    </div>
+  </div>
+</section>
+
+<section className="focus" id="focus">
+  <div className="wrap">
+    <h2 className="rv">Focus areas</h2>
+    <p className="lead rv">We back innovators solving real community problems across five sectors, from the rural economy to emerging technology.</p>
+    <div className="bento">
+      <div className="card w2 b-agri rv"><Plant className="art" aria-hidden="true" /><div className="ico"><Plant /></div><h3>Agriculture</h3><p>Automation, waste recycling and value addition for a sustainable rural economy.</p><div className="tags"><span>Animal husbandry</span><span>Crop cultivation</span><span>Farming techniques</span><span>Food technology</span><span>Agro processing</span></div></div>
+      <div className="card rv" style={{"--i": "1"} as React.CSSProperties}><div className="ico"><Palette /></div><h3>Art and culture</h3><p>Reimagining creative and cultural heritage.</p><div className="tags"><span>Visual arts</span><span>Performing arts</span><span>Cultural heritage</span></div></div>
+      <div className="card rv" style={{"--i": "2"} as React.CSSProperties}><div className="ico"><HandHeart /></div><h3>Social impact</h3><p>Ventures that uplift communities.</p><div className="tags"><span>Skill development</span><span>Education</span><span>Poverty alleviation</span></div></div>
+      <div className="card b-tint rv"><div className="ico" style={{"background": "#fff"} as React.CSSProperties}><Recycle /></div><h3>Sustainability</h3><p>Green ideas for a circular future.</p><div className="tags"><span>Renewable energy</span><span>Waste management</span><span>Green tech</span></div></div>
+      <div className="card rv" style={{"--i": "1"} as React.CSSProperties}><div className="ico"><Cpu /></div><h3>Technology</h3><p>Digital and deep-tech products built for Bharat.</p><div className="tags"><span>AI and ML</span><span>IoT</span><span>Software</span></div></div>
+      <div className="card w2 b-cta rv" style={{"--i": "2"} as React.CSSProperties}><div className="ico"><Tractor /></div><h3>Solving for agriculture and the rural economy?</h3><p>We are calling for startups working on farm automation, agri-waste recycling, value addition to farm and forest produce, aggregation models and local rural employment.</p><a className="btn pri" href="#incubation">Apply now <ArrowRight /></a></div>
+    </div>
+  </div>
+</section>
+
+<section id="journey">
+  <div className="wrap center">
+    <h2 className="rv">From idea to startup</h2>
+    <p className="lead rv">Pre-incubation takes you to a working MVP. Incubation takes it to market.</p>
+    <div className="steps">
+      <div className="rv"><div className="num"><Users /></div><h3>Understand</h3><p>Map your target customers</p></div>
+      <div className="rv" style={{"--i": "1"} as React.CSSProperties}><div className="num"><MagnifyingGlass /></div><h3>Validate</h3><p>Explore and validate the customer problem</p></div>
+      <div className="rv" style={{"--i": "2"} as React.CSSProperties}><div className="num"><Cube /></div><h3>Prototype</h3><p>Design and test your MVP</p></div>
+      <div className="rv" style={{"--i": "3"} as React.CSSProperties}><div className="num"><Briefcase /></div><h3>Business model</h3><p>Build a model that sustains itself</p></div>
+      <div className="rv" style={{"--i": "4"} as React.CSSProperties}><div className="num"><RocketLaunch /></div><h3>Scale</h3><p>Pilots, IPR and Demo Day with investors</p></div>
+    </div>
+  </div>
+</section>
+
+<section className="programs" id="programs">
+  <div className="wrap">
+    <div className="phead">
+      <div><span className="chip rv">Programs</span><h2 className="rv">Featured programs</h2>
+      <p className="lead rv">For students, rural youth, community innovators and early-stage startups, supported by Atal Innovation Mission.</p></div>
+      <div className="arrows rv"><button data-d="-1" aria-label="Previous programs"><ArrowLeft /></button><button data-d="1" aria-label="Next programs"><ArrowRight /></button></div>
+    </div>
+    <div className="rail" id="rail" tabIndex={0} aria-label="Programs list">
+      <div className="card"><div className="ico"><Plant /></div><h3>Grassroots Innovation Program</h3><p>Design thinking, problem-solving and analytical skills for rural youth aged 18 to 22, with makerspace access and certification.</p><span className="badge">4 months</span></div>
+      <div className="card"><div className="ico"><Bus /></div><h3>Innovation Yatra</h3><p>A bus journey through Telangana's innovation ecosystem to meet the grassroots innovators of rural Telangana.</p><span className="badge">5 days</span></div>
+      <div className="card"><div className="ico"><UsersThree /></div><h3>Community Innovator Fellowship</h3><p>A year-long intensive fellowship for aspiring community innovators, with AIM, NITI Aayog and UNDP India.</p><span className="badge">1 year</span></div>
+      <div className="card"><div className="ico"><Student /></div><h3>Student Innovation Program</h3><p>Supported by Atal Innovation Mission, helping students turn ideas into working innovations.</p><span className="badge">Students</span></div>
+      <div className="card"><div className="ico"><Brain /></div><h3>National Ideathon</h3><p>A national platform to find and accelerate sustainable, grassroots ideas for real community problems.</p><span className="badge">Ideathon</span></div>
+      <div className="card"><div className="ico"><AirplaneTakeoff /></div><h3>Liftoff Accelerator</h3><p>A milestone-driven path to investor readiness for early-stage startups, with the Wadhwani Foundation, at no cost.</p><span className="badge">Free</span></div>
+      <div className="card"><div className="ico"><Wrench /></div><h3>Capacity Building at ITIs</h3><p>Innovation mindset, design thinking and entrepreneurship readiness for Government ITI trainees.</p><span className="badge">Outreach</span></div>
+      <div className="card"><div className="ico"><Robot /></div><h3>Summer Innovation Boot Camp</h3><p>Idea to prototype to pitch for school students, with robotics, drones, 3D printing, AI and AR/VR.</p><span className="badge">Schools</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="incubation">
+  <div className="wrap">
+    <h2 className="rv">Pre-incubation and incubation</h2>
+    <p className="lead rv">Bring an idea or a prototype. We provide the structure, labs and mentors to take it further.</p>
+    <div className="plans">
+      <div className="card plan rv">
+        <h3>Pre-incubation</h3>
+        <p>For anyone with an innovative idea or early prototype who wants to build an MVP. Ideas aligned to SDG 3, 9 and 11 are eligible.</p>
+        <div className="price"><div><b>₹3,000</b>Program fee</div><div><b>3 months</b>Duration</div></div>
+        <ul>
+          <li><CheckCircle />Expert workshops from customer discovery to MVP</li>
+          <li><CheckCircle />Idea validation, SWOT and stakeholder mapping tools</li>
+          <li><CheckCircle />3D printing, IoT, drone and mechanical labs</li>
+          <li><CheckCircle />e-Certificate on completion</li>
+        </ul>
+      </div>
+      <div className="card plan dark rv" style={{"--i": "1"} as React.CSSProperties}>
+        <h3>Incubation</h3>
+        <p>For startups with a working prototype or MVP that are ready to refine strategy, validate the market and scale.</p>
+        <div className="price"><div><b>₹6,000</b>Registration</div><div><b>₹2,500</b>Per month</div><div><b>6 to 12</b>Months</div></div>
+        <ul>
+          <li><CheckCircle />Go-to-market strategy with expert guidance</li>
+          <li><CheckCircle />Support to run pilots</li>
+          <li><CheckCircle />Demo Day with investors and IPR support</li>
+          <li><CheckCircle />Technical and business mentors</li>
+        </ul>
+      </div>
+    </div>
+
+    <div className="maker" id="makerspace" style={{"marginTop": "120px", "scrollMarginTop": "110px"} as React.CSSProperties}>
+      <img className="rv" src="/gallery/startup-lab.jpg" alt="Innovators working at benches in the MLRIT lab" width="900" height="600" loading="lazy" />
+      <div>
+        <h2 className="rv">Makerspace and sector labs</h2>
+        <p className="lead rv">Equipment to design, build and test your prototype, plus co-working and virtual incubation.</p>
+        <div className="pills rv">
+          <span><Printer />3D printer</span>
+          <span><Scissors />CO2 laser cutter</span>
+          <span><Drone />UAV kits</span>
+          <span><CarSimple />UGV kits</span>
+          <span><Thermometer />FLIR thermal camera</span>
+          <span><WaveSine />Tektronix oscilloscopes</span>
+          <span><Waveform />Function generator</span>
+          <span><Gauge />Yokogawa power meter</span>
+          <span><Plug />Keithley multimeter</span>
+          <span><Lightning />Soldering stations</span>
+          <span><Desktop />Co-working desks</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section className="faq" id="faq">
+  <div className="wrap" style={{"maxWidth": "860px"} as React.CSSProperties}>
+    <h2 className="center rv">Questions, answered</h2>
+    <div style={{"marginTop": "40px"} as React.CSSProperties}>
+      <details className="rv"><summary>I have two ideas. Can I submit both?<Plus /></summary><p>No, one idea at a time.</p></details>
+      <details className="rv"><summary>I have a team. Can we apply?<Plus /></summary><p>Yes, teams can apply.</p></details>
+      <details className="rv"><summary>Who is considered for pre-incubation?<Plus /></summary><p>Graduates and current students, anyone pursuing entrepreneurship as a career, and early-stage ideas.</p></details>
+      <details className="rv"><summary>Who can join the Innovation Yatra?<Plus /></summary><p>Anyone aged 18 to 35 who wants to explore communities. Degrees and marks are not considered; we look for curiosity and a passion for learning.</p></details>
+      <details className="rv"><summary>Do I need to be an entrepreneur already?<Plus /></summary><p>No. Our programs are often the first step for budding entrepreneurs.</p></details>
+      <details className="rv"><summary>How safe is the Yatra for women?<Plus /></summary><p>Safety is our priority. Female facilitators are available around the clock and more than half the team are women.</p></details>
+    </div>
+  </div>
+</section>
+
+<section className="final center">
+  <div className="wrap" style={{"position": "relative"} as React.CSSProperties}>
+    <h2 className="rv">Ready to build <span>for Bharath?</span></h2>
+    <p className="lead rv">Bring an idea, a prototype or a growing startup. We bring mentors, a makerspace and a network to turn it into a venture your community needs.</p>
+    <div className="cta rv">
+      <a className="btn pri" href="#incubation">Apply now <ArrowRight /></a>
+      <a className="btn" href="#contact">Contact us</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer id="contact">
+  <div className="wrap">
+    <div className="fgrid">
+      <div>
+        <span className="logo">ACIC<b>.</b></span>
+        <div style={{"color": "#fff", "fontWeight": "600"} as React.CSSProperties}>Atal Community Innovation Centre, MLRIT</div>
+        <p style={{"marginTop": "8px"} as React.CSSProperties}>Enabling infrastructure and mentorship for innovators in underserved regions.</p>
+        <p className="fhand">Empowering innovations for Bharath.</p>
+        {/* TODO: replace # with ACIC MLRIT social URLs */}
+        <div className="soc"><a href="#" aria-label="Instagram"><InstagramLogo /></a><a href="#" aria-label="LinkedIn"><LinkedinLogo /></a><a href="#" aria-label="YouTube"><YoutubeLogo /></a><a href="#" aria-label="X"><XLogo /></a></div>
+      </div>
+      <div><h4>EXPLORE</h4><a href="#about">About</a><a href="#focus">Focus areas</a><a href="#programs">Programs</a><a href="#faq">FAQs</a></div>
+      <div><h4>FOR STARTUPS</h4><a href="#incubation">Pre-incubation</a><a href="#incubation">Incubation</a><a href="#makerspace">Makerspace</a><a href="#makerspace">Co-working</a></div>
+      <div><h4>CONTACT</h4>
+        <p className="addr"><MapPin /><span>MLRIT, Dundigal, Hyderabad,<br />Telangana 500043</span></p>
+        {/* TODO: confirm ACIC MLRIT email */}
+        <a className="addr" href="mailto:acic@mlrit.ac.in" style={{"marginTop": "14px"} as React.CSSProperties}><EnvelopeSimple />acic@mlrit.ac.in</a>
+      </div>
+    </div>
+    <div className="bt">© {new Date().getFullYear()} ACIC MLRIT. All rights reserved.</div>
+  </div>
+</footer>
+<a id="top" href="#home" aria-label="Back to top"><ArrowUp /></a>
+      <Effects />
+    </>
   );
 }

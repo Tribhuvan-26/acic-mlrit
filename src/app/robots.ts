@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/"],
     },
-    sitemap: "https://acicmlrit.in/sitemap.xml",
+    sitemap: "https://acic-mlrit.vercel.app/sitemap.xml",
   };
 }
