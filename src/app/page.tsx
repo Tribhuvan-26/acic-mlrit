@@ -63,7 +63,6 @@ export default function Home() {
     <div className="about">
       <div>
 
-        <span className="chip rv">Our purpose</span>
         <h2 className="rv">About <b>ACIC-MLR Institute of Technology Foundation</b></h2>
         <p className="lead rv">Atal Innovation Mission (AIM), NITI Aayog, promotes a culture of innovation and entrepreneurship across India by supporting institutions to set up Atal Community Innovation Centres. MLRIT was selected by AIM and approved to establish the <b>ACIC-MLR Institute of Technology Foundation</b> on its campus.</p>
         <p className="vision rv">Our vision is to encourage entrepreneurship in underserved regions by providing enabling infrastructure and an environment for innovation.</p>
@@ -113,7 +112,7 @@ export default function Home() {
 <section className="programs" id="programs">
   <div className="wrap">
     <div className="phead">
-      <div><span className="chip rv">Programs</span><h2 className="rv">Featured programs</h2>
+      <div><h2 className="rv">Featured programs</h2>
       <p className="lead rv">For students, rural youth, community innovators and early-stage startups, supported by Atal Innovation Mission.</p></div>
       <div className="arrows rv"><button data-d="-1" aria-label="Previous programs"><ArrowLeft /></button><button data-d="1" aria-label="Next programs"><ArrowRight /></button></div>
     </div>
@@ -184,7 +183,7 @@ export default function Home() {
 
 <section className="faq" id="faq">
   <div className="wrap" style={{"maxWidth": "860px"} as React.CSSProperties}>
-    <h2 className="center rv">Questions, answered</h2>
+    <h2 className="center rv">Frequently asked questions</h2>
     <div style={{"marginTop": "40px"} as React.CSSProperties}>
       <details className="rv"><summary>I have two ideas. Can I submit both?<Plus /></summary><p>No, one idea at a time.</p></details>
       <details className="rv"><summary>I have a team. Can we apply?<Plus /></summary><p>Yes, teams can apply.</p></details>
