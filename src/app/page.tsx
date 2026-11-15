@@ -30,7 +30,7 @@ export default function Home() {
   </div>
   <div className="wrap">
     <div>
-      <div className="hand in-1">Atal Community Innovation Centre, MLRIT</div>
+      <div className="in-1"><span className="hl">ACIC-MLR Institute of Technology Foundation</span></div>
       <h1 className="big in-2">Empowering<br /><span className="out">Innovations</span><br />for Bharath</h1>
       <p className="in-3">We identify, build and nurture sustainable communities through innovation.</p>
       <div className="cta in-3">
@@ -62,9 +62,10 @@ export default function Home() {
   <div className="wrap">
     <div className="about">
       <div>
+
         <span className="chip rv">Our purpose</span>
-        <h2 className="rv">About ACIC MLRIT</h2>
-        <p className="lead rv">Atal Innovation Mission (AIM), NITI Aayog, promotes a culture of innovation and entrepreneurship across India by supporting institutions to set up Atal Community Innovation Centres. MLRIT was selected by AIM and approved to establish an ACIC on its campus.</p>
+        <h2 className="rv">About <b>ACIC-MLR Institute of Technology Foundation</b></h2>
+        <p className="lead rv">Atal Innovation Mission (AIM), NITI Aayog, promotes a culture of innovation and entrepreneurship across India by supporting institutions to set up Atal Community Innovation Centres. MLRIT was selected by AIM and approved to establish the <b>ACIC-MLR Institute of Technology Foundation</b> on its campus.</p>
         <p className="vision rv">Our vision is to encourage entrepreneurship in underserved regions by providing enabling infrastructure and an environment for innovation.</p>
       </div>
       <img className="rv" src="/gallery/innovation-challenge-group.jpg" alt="MLRIT innovators gathered at an innovation event" width="700" height="466" loading="lazy" />
@@ -212,7 +213,7 @@ export default function Home() {
     <div className="fgrid">
       <div>
         <span className="logo">ACIC<b>.</b></span>
-        <div style={{"color": "#fff", "fontWeight": "600"} as React.CSSProperties}>Atal Community Innovation Centre, MLRIT</div>
+        <div style={{"color": "#fff", "fontWeight": "700"} as React.CSSProperties}>ACIC-MLR Institute of Technology Foundation</div>
         <p style={{"marginTop": "8px"} as React.CSSProperties}>Enabling infrastructure and mentorship for innovators in underserved regions.</p>
         <p className="fhand">Empowering innovations for Bharath.</p>
         {/* TODO: replace # with ACIC MLRIT social URLs */}
@@ -226,7 +227,7 @@ export default function Home() {
         <a className="addr" href="mailto:acic@mlrit.ac.in" style={{"marginTop": "14px"} as React.CSSProperties}><EnvelopeSimple />acic@mlrit.ac.in</a>
       </div>
     </div>
-    <div className="bt">© {new Date().getFullYear()} ACIC MLRIT. All rights reserved.</div>
+    <div className="bt">© {new Date().getFullYear()} ACIC-MLR Institute of Technology Foundation. All rights reserved.</div>
   </div>
 </footer>
 <a id="top" href="#home" aria-label="Back to top"><ArrowUp /></a>

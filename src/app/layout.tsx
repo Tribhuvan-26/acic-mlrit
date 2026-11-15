@@ -6,7 +6,7 @@ const manrope = Manrope({ subsets: ["latin"], weight: ["600", "700", "800"], var
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-inter", display: "swap" });
 const caveat = Caveat({ subsets: ["latin"], weight: ["500"], variable: "--font-caveat", display: "swap" });
 
-const title = "ACIC MLRIT | Atal Community Innovation Centre";
+const title = "ACIC-MLR Institute of Technology Foundation | Atal Community Innovation Centre";
 const description =
   "Atal Community Innovation Centre at MLRIT, supported by Atal Innovation Mission, NITI Aayog. Empowering innovations for Bharath.";
 
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     apple: [{ url: "/apple-touch-icon.png" }],
   },
   manifest: "/site.webmanifest",
-  openGraph: { title, description, type: "website", url: "/", siteName: "ACIC MLRIT" },
+  openGraph: { title, description, type: "website", url: "/", siteName: "ACIC-MLR Institute of Technology Foundation" },
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#e8521a" };
