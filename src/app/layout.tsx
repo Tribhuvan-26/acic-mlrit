@@ -17,21 +17,46 @@ export const metadata: Metadata = {
   keywords: ["MLRIT", "ACIC", "Atal Community Innovation Centre", "Atal Innovation Mission", "incubation", "startups", "Hyderabad"],
   icons: {
     icon: [
+      { url: "/favicon.ico", sizes: "any" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
     apple: [{ url: "/apple-touch-icon.png" }],
   },
   manifest: "/site.webmanifest",
-  openGraph: { title, description, type: "website", url: "/", siteName: "ACIC-MLR Institute of Technology Foundation" },
+  openGraph: {
+    title,
+    description,
+    type: "website",
+    url: "/",
+    siteName: "ACIC-MLR Institute of Technology Foundation",
+    locale: "en_IN",
+    images: [
+      { url: "/og-image.png", width: 1200, height: 630, alt: "ACIC-MLR Institute of Technology Foundation" },
+      { url: "/og-icon.png", width: 1200, height: 1200, alt: "ACIC logo" },
+    ],
+  },
+  twitter: { card: "summary_large_image", title, description, images: ["/og-image.png"] },
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#e8521a" };
 
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "ACIC-MLR Institute of Technology Foundation",
+  alternateName: "Atal Community Innovation Centre, MLRIT",
+  url: "https://acic-mlrit.vercel.app",
+  logo: "https://acic-mlrit.vercel.app/android-chrome-512x512.png",
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${manrope.variable} ${inter.variable} ${caveat.variable}`}>
-      <body>{children}</body>
+      <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
+        {children}
+      </body>
     </html>
   );
 }
