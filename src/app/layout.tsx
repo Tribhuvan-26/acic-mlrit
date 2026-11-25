@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope, Inter, Caveat, Instrument_Serif } from "next/font/google";
+import { Manrope, Inter, Caveat } from "next/font/google";
 import "./globals.css";
 
 const manrope = Manrope({ subsets: ["latin"], weight: ["600", "700", "800"], variable: "--font-manrope", display: "swap" });
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-inter", display: "swap" });
-const serif = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--font-serif", display: "swap", preload: false });
 const caveat = Caveat({ subsets: ["latin"], weight: ["500"], variable: "--font-caveat", display: "swap" });
 
 const title = "ACIC-MLR Institute of Technology Foundation | Atal Community Innovation Centre";
@@ -53,7 +52,7 @@ const orgJsonLd = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${manrope.variable} ${inter.variable} ${caveat.variable} ${serif.variable}`}>
+    <html lang="en" className={`${manrope.variable} ${inter.variable} ${caveat.variable}`}>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         {children}

@@ -1,26 +1,48 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatePresence, MotionConfig, motion } from "motion/react";
-import { ArrowRight, ArrowCounterClockwise, SpeakerHigh, SpeakerSlash } from "@phosphor-icons/react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { AnimatePresence, MotionConfig, motion, useMotionValue, useSpring } from "motion/react";
+import { ArrowRight, SpeakerHigh, SpeakerSlash } from "@phosphor-icons/react";
 import Embers from "./Embers";
-import Balloons from "./Balloons";
 import { Confetti } from "./confetti";
-import { pop, tick, unlockAudio } from "./sound";
+import { boom, impact, setMuted, startRiser, stopRiser, unlockAudio } from "./sound";
 import s from "./unveil.module.css";
 
-/* Launch reveal: suspense intro → one click → 5·4·3·2·1 → poppers, confetti, balloons → celebration.
-   Sits over the site; "Enter the website" removes it. Everything happens on this page, no reload. */
+/* Launch reveal over the site: landing → one click → 5·4·3·2·1 → confetti cannons + celebration.
+   "Enter the website" removes the overlay. No reloads. */
 
 type Stage = "intro" | "count" | "party" | "gone";
 const FROM = 5;
 const STEP_MS = 1000;
 const ease = [0.16, 1, 0.3, 1] as const;
+const FACTS = [["5", "Focus areas"], ["8+", "Programs"], ["3", "Month pre-incubation"], ["6", "Month incubation"]] as const;
 
-const SPARKLES = [
-  { x: 14, y: 22, d: 0 }, { x: 84, y: 18, d: 0.4 }, { x: 22, y: 70, d: 0.8 }, { x: 78, y: 74, d: 0.2 },
-  { x: 50, y: 12, d: 1 }, { x: 8, y: 48, d: 0.6 }, { x: 92, y: 46, d: 1.2 }, { x: 36, y: 86, d: 0.3 }, { x: 64, y: 88, d: 0.9 },
-];
+/* CTA that leans toward the pointer and springs back. */
+function Magnetic({ onClick, children }: { onClick: () => void; children: ReactNode }) {
+  const x = useMotionValue(0), y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 220, damping: 16, mass: 0.4 });
+  const sy = useSpring(y, { stiffness: 220, damping: 16, mass: 0.4 });
+  return (
+    <motion.div className={s.ctaWrap} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.5, duration: 1, ease }}>
+      <motion.button
+        className={s.cta}
+        style={{ x: sx, y: sy }}
+        onPointerMove={(e) => {
+          if (e.pointerType !== "mouse") return;
+          const r = e.currentTarget.getBoundingClientRect();
+          x.set((e.clientX - (r.left + r.width / 2)) * 0.22);
+          y.set((e.clientY - (r.top + r.height / 2)) * 0.35);
+        }}
+        onPointerLeave={() => { x.set(0); y.set(0); }}
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
+        onClick={onClick}
+      >
+        <span className={s.ctaInner}>{children}</span>
+      </motion.button>
+    </motion.div>
+  );
+}
 
 export default function Unveil() {
   const [stage, setStage] = useState<Stage>("intro");
@@ -29,49 +51,49 @@ export default function Unveil() {
   const canvas = useRef<HTMLCanvasElement>(null);
   const confetti = useRef<Confetti | null>(null);
   const timers = useRef<number[]>([]);
-  const soundRef = useRef(sound);
-  useEffect(() => { soundRef.current = sound; }, [sound]);
+  const running = useRef(false);
 
   const clearTimers = () => { timers.current.forEach(clearTimeout); timers.current = []; };
 
-  // lock page scroll while the overlay is up
-  useEffect(() => {
-    document.documentElement.style.overflow = stage === "gone" ? "" : "hidden";
-  }, [stage]);
-
+  useEffect(() => { document.documentElement.style.overflow = stage === "gone" ? "" : "hidden"; }, [stage]);
+  useEffect(() => { setMuted(!sound); }, [sound]);
   useEffect(() => {
     const onResize = () => confetti.current?.resize();
     window.addEventListener("resize", onResize);
-    return () => { window.removeEventListener("resize", onResize); clearTimers(); confetti.current?.stop(); };
+    return () => { window.removeEventListener("resize", onResize); clearTimers(); confetti.current?.stop(); stopRiser(); };
   }, []);
 
   const celebrate = useCallback(() => {
     setStage("party");
-    if (soundRef.current) pop();
+    impact();
+    running.current = false;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (!confetti.current && canvas.current) confetti.current = new Confetti(canvas.current);
     confetti.current?.celebrate();
   }, []);
 
-  /* Countdown scheduled against one start time, so ticks don't drift. */
-  const runCountdown = useCallback(() => {
-    clearTimers();
-    confetti.current?.stop();
-    setN(FROM);
-    setStage("count");
+  /* One click starts it; the guard stops repeat clicks from stacking countdowns.
+     Every step is scheduled from one start time, so the count doesn't drift. */
+  const unveil = () => {
+    if (running.current) return;
+    running.current = true;
+    unlockAudio(); setMuted(!sound);
+    setN(FROM); setStage("count");
+    startRiser((FROM * STEP_MS) / 1000);
     const t0 = performance.now();
     for (let i = 0; i <= FROM; i++) {
-      const at = t0 + i * STEP_MS;
       timers.current.push(window.setTimeout(() => {
         if (i === FROM) { celebrate(); return; }
         setN(FROM - i);
-        if (soundRef.current) tick(i === FROM - 1);
-      }, Math.max(0, at - performance.now())));
+        boom(i / (FROM - 1));
+      }, Math.max(0, t0 + i * STEP_MS - performance.now())));
     }
-  }, [celebrate]);
+  };
 
-  const unveil = () => { unlockAudio(); runCountdown(); };
-  const enter = () => { clearTimers(); setStage("gone"); };
+  const enter = () => { clearTimers(); stopRiser(); running.current = false; setStage("gone"); };
+
+  // background light: dim on the landing, brighter with every number, full at the reveal
+  const lvl = stage === "count" ? (FROM - n + 1) / FROM : stage === "party" ? 1.25 : 0;
 
   return (
     <MotionConfig reducedMotion="user">
@@ -81,123 +103,108 @@ export default function Unveil() {
             key="unveil"
             className={s.root}
             data-stage={stage}
+            style={{ ["--lvl" as string]: lvl }}
             role="dialog"
             aria-modal="true"
             aria-label="Website unveiling"
-            exit={{ opacity: 0, scale: 1.04, filter: "blur(6px)" }}
-            transition={{ duration: 0.8, ease }}
+            exit={{ opacity: 0, transition: { duration: 0.9, ease } }}
           >
-            {/* layered background */}
             <div className={s.bg} aria-hidden="true">
-              <span className={s.blobA} /><span className={s.blobB} />
-              <span className={s.rays} />
-              <span className={s.partyBg} />
+              <span className={s.light} />
+              <span className={s.halo} />
+              <span className={s.beam} />
               <span className={s.grain} />
               <span className={s.vignette} />
             </div>
-            <Embers className={s.embers} speed={stage === "count" ? 4 : 1} />
+            <Embers className={s.embers} speed={stage === "count" ? 3 : 1} />
 
-            <div className={s.chrome}>
-              <span className={s.brand}>ACIC-MLRIT</span>
+            <header className={s.chrome}>
+              <span className={s.brand}>ACIC — MLRIT</span>
               <button className={s.mute} onClick={() => setSound((v) => !v)} aria-pressed={!sound} aria-label={sound ? "Mute sound" : "Turn sound on"}>
-                {sound ? <SpeakerHigh weight="fill" /> : <SpeakerSlash weight="fill" />}
+                {sound ? <SpeakerHigh /> : <SpeakerSlash />}
+                <span>{sound ? "Sound on" : "Sound off"}</span>
               </button>
-            </div>
+            </header>
 
             <AnimatePresence mode="wait">
               {stage === "intro" && (
                 <motion.section
                   key="intro"
                   className={s.stage}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0, scale: 0.94, filter: "blur(14px)", transition: { duration: 0.45, ease } }}
+                  exit={{ opacity: 0, scale: 0.97, filter: "blur(12px)", transition: { duration: 0.5, ease } }}
                 >
-                  <motion.p className={s.eyebrow} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.9, ease }}>
-                    <span className={s.dot} /> Website launch · 2026
+                  <motion.p className={s.kicker} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 1.2 }}>
+                    <span className={s.rule} /> An exclusive unveiling <span className={s.rule} />
                   </motion.p>
                   <h1 className={s.title}>
-                    {["Something", "Special", "Is", "About", "to", "Be"].map((w, i) => (
-                      <motion.span key={w} className={s.word} initial={{ opacity: 0, y: "60%", filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ delay: 0.35 + i * 0.08, duration: 1, ease }}>
-                        {w}{" "}
-                      </motion.span>
+                    {["The moment", "has arrived."].map((line, i) => (
+                      <span key={line} className={s.mask}>
+                        <motion.span className={s.line} initial={{ y: "105%" }} animate={{ y: 0 }} transition={{ delay: 0.35 + i * 0.16, duration: 1.2, ease }}>
+                          {line}
+                        </motion.span>
+                      </span>
                     ))}
-                    <motion.em className={s.em} initial={{ opacity: 0, y: "40%", filter: "blur(14px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ delay: 0.95, duration: 1.3, ease }}>
-                      Unveiled<span className={s.ellipsis}>...</span>
-                    </motion.em>
                   </h1>
-                  <motion.p className={s.sub} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.4, duration: 1 }}>
-                    The wait is almost over.
+                  <motion.p className={s.sub} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.05, duration: 1.1, ease }}>
+                    Something extraordinary is about to be unveiled.
                   </motion.p>
-                  <motion.button
-                    className={s.cta}
-                    onClick={unveil}
-                    initial={{ opacity: 0, scale: 0.85 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.6, type: "spring", stiffness: 160, damping: 16 }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.96 }}
-                    autoFocus
-                  >
-                    <span className={s.ctaPulse} aria-hidden="true" />
-                    <span className={s.ctaLabel}>Click to unveil</span>
-                  </motion.button>
-                  <motion.button className={s.skip} onClick={enter} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.2 }}>
-                    Skip intro
+                  <Magnetic onClick={unveil}>
+                    Unveil now <ArrowRight weight="bold" className={s.arrow} />
+                  </Magnetic>
+                  <motion.button className={s.skip} onClick={enter} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.4 }}>
+                    Skip to website
                   </motion.button>
                 </motion.section>
               )}
 
               {stage === "count" && (
-                <motion.section key="count" className={s.stage} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.15 } }} aria-live="assertive">
-                  <div className={s.count}>
+                <motion.section key="count" className={s.stage} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.2 } }}>
+                  <p className={s.kicker}><span className={s.rule} /> Unveiling in <span className={s.rule} /></p>
+                  <div className={s.count} aria-live="assertive">
                     <AnimatePresence>
-                      <motion.span
-                        key={`ring${n}`}
-                        className={s.ring}
-                        initial={{ scale: 0.2, opacity: 0.8 }}
-                        animate={{ scale: 2.6, opacity: 0 }}
-                        transition={{ duration: 1, ease: "easeOut" }}
-                        aria-hidden="true"
-                      />
                       <motion.span
                         key={n}
                         className={s.num}
-                        initial={{ scale: 0.3, opacity: 0, filter: "blur(16px)" }}
-                        animate={{ scale: 1, opacity: 1, filter: "blur(0px)", transition: { duration: 0.55, ease } }}
-                        exit={{ scale: 1.7, opacity: 0, filter: "blur(10px)", transition: { duration: 0.4, ease: "easeIn" } }}
+                        initial={{ opacity: 0, scale: 1.35, filter: "blur(28px)" }}
+                        animate={{ opacity: 1, scale: 1, filter: "blur(0px)", transition: { duration: 0.6, ease } }}
+                        exit={{ opacity: 0, scale: 0.82, filter: "blur(18px)", transition: { duration: 0.45, ease: [0.7, 0, 0.84, 0] } }}
                       >
                         {n}
                       </motion.span>
                     </AnimatePresence>
                   </div>
-                  <div className={s.bars} aria-hidden="true">
-                    {Array.from({ length: FROM }, (_, i) => <span key={i} className={i < FROM - n + 1 ? s.barOn : s.bar} />)}
+                  <div className={s.meter} aria-hidden="true">
+                    <motion.span key={n} className={s.meterFill} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: STEP_MS / 1000, ease: "linear" }} />
                   </div>
                 </motion.section>
               )}
 
               {stage === "party" && (
-                <motion.section key="party" className={s.stage} initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <motion.span className={s.flash} initial={{ opacity: 0.9 }} animate={{ opacity: 0 }} transition={{ duration: 0.7 }} aria-hidden="true" />
-                  <Balloons />
-                  {SPARKLES.map((p, i) => (
-                    <span key={i} className={s.sparkle} style={{ left: `${p.x}%`, top: `${p.y}%`, animationDelay: `${p.d}s` }} aria-hidden="true" />
-                  ))}
+                <motion.section key="party" className={s.stage} exit={{ opacity: 0, transition: { duration: 0.4 } }}>
+                  <motion.span className={s.bloom} initial={{ opacity: 0.85, scale: 0.4 }} animate={{ opacity: 0, scale: 2.2 }} transition={{ duration: 1.4, ease: "easeOut" }} aria-hidden="true" />
+                  <motion.p className={s.kicker} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 1 }}>
+                    <span className={s.rule} /> We are now live <span className={s.rule} />
+                  </motion.p>
                   <motion.h2
                     className={s.message}
-                    initial={{ scale: 0.25, opacity: 0, filter: "blur(20px)" }}
-                    animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
-                    transition={{ delay: 0.15, type: "spring", stiffness: 120, damping: 13 }}
+                    initial={{ opacity: 0, scale: 0.86, filter: "blur(16px)" }}
+                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                    transition={{ delay: 0.1, duration: 1.4, ease }}
                   >
-                    Let the <em>Celebration</em> Begin!
+                    Empowering <span className={s.out}>Innovations</span> <span className={s.gold}>for Bharath</span>
                   </motion.h2>
-                  <motion.p className={s.msgSub} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9, duration: 0.8, ease }}>
-                    ACIC-MLR Institute of Technology Foundation is now live.
+                  <motion.p className={s.over} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 1.2, ease }}>
+                    <b>ACIC-MLR Institute of Technology Foundation</b> &middot; Atal Community Innovation Centre, supported by Atal Innovation Mission, NITI Aayog
                   </motion.p>
-                  <motion.div className={s.actions} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.3, duration: 0.8, ease }}>
-                    <button className={s.primary} onClick={enter} autoFocus>Enter the website <ArrowRight weight="bold" /></button>
-                    <button className={s.ghost} onClick={runCountdown}><ArrowCounterClockwise weight="bold" /> Replay</button>
+                  <motion.ul className={s.facts} initial="hide" animate="show" variants={{ show: { transition: { delayChildren: 1.2, staggerChildren: 0.12 } } }}>
+                    {FACTS.map(([num, label]) => (
+                      <motion.li key={label} variants={{ hide: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0, transition: { duration: 0.8, ease } } }}>
+                        <b>{num}</b><span>{label}</span>
+                      </motion.li>
+                    ))}
+                  </motion.ul>
+                  <motion.div className={s.actions} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 2, duration: 1, ease }}>
+                    <button className={s.primary} onClick={enter}>Enter the website <ArrowRight weight="bold" /></button>
                   </motion.div>
                 </motion.section>
               )}

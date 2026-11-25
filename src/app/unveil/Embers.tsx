@@ -28,15 +28,15 @@ export default function Embers({ className, speed = 1 }: { className?: string; s
     sprite.width = sprite.height = 32;
     const s = sprite.getContext("2d")!;
     const grad = s.createRadialGradient(16, 16, 0, 16, 16, 16);
-    grad.addColorStop(0, "rgba(255,214,170,1)");
-    grad.addColorStop(0.25, "rgba(255,140,60,.75)");
+    grad.addColorStop(0, "rgba(255,214,192,1)");
+    grad.addColorStop(0.25, "rgba(255,138,61,.6)");
     grad.addColorStop(1, "rgba(232,82,26,0)");
     s.fillStyle = grad; s.fillRect(0, 0, 32, 32);
 
-    const n = W < 600 ? 34 : 70;
+    const n = W < 600 ? 22 : 44;
     const dots = Array.from({ length: n }, () => ({
-      x: Math.random() * W, y: Math.random() * H, r: 4 + Math.random() * 12,
-      v: 0.15 + Math.random() * 0.45, ph: Math.random() * 6.28, a: 0.25 + Math.random() * 0.6,
+      x: Math.random() * W, y: Math.random() * H, r: 2 + Math.random() * 7,
+      v: 0.15 + Math.random() * 0.45, ph: Math.random() * 6.28, a: 0.15 + Math.random() * 0.45,
     }));
 
     let raf = 0;
