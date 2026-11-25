@@ -2,6 +2,7 @@ import Image from "next/image";
 /* eslint-disable @next/next/no-img-element */
 import { AirplaneTakeoff, ArrowLeft, ArrowRight, ArrowUp, Brain, Briefcase, Bus, CarSimple, CheckCircle, Cpu, Cube, Desktop, Drone, EnvelopeSimple, Gauge, GraduationCap, HandHeart, InstagramLogo, Lightbulb, Lightning, LinkedinLogo, List, MagnifyingGlass, MapPin, MegaphoneSimple, Network, Palette, Plant, Plug, Plus, Printer, Recycle, Robot, RocketLaunch, Scales, Scissors, Student, Thermometer, Tractor, Users, UsersThree, WaveSine, Waveform, Wrench, XLogo, YoutubeLogo } from "@phosphor-icons/react/dist/ssr";
 import Effects from "./Effects";
+import Unveil from "./unveil/Unveil";
 
 export default function Home() {
   return (
@@ -232,6 +233,7 @@ export default function Home() {
 </footer>
 <a id="top" href="#home" aria-label="Back to top"><ArrowUp /></a>
       <Effects />
+      <Unveil />
     </>
   );
 }

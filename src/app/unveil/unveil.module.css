@@ -1,0 +1,150 @@
+/* Unveil overlay. Dark, warm, cinematic: ink background lit by the brand orange. */
+.root {
+  --ink: #0b0b0e;
+  --o: #e8521a;
+  --o2: #ff8a3d;
+  --cream: #fdf6e8;
+  --serif: var(--font-serif), Georgia, serif;
+  position: fixed; inset: 0; z-index: 1000; overflow: hidden;
+  background: var(--ink); color: var(--cream);
+  display: grid; place-items: center;
+}
+
+/* ---------- background layers ---------- */
+.bg, .bg > span { position: absolute; inset: 0; pointer-events: none; }
+.blobA, .blobB { border-radius: 50%; filter: blur(80px); inset: auto !important; transition: opacity 1s, transform 1s; }
+.blobA { width: 60vmax; height: 60vmax; left: -15vmax; top: -20vmax; background: radial-gradient(circle, rgba(232, 82, 26, .55), transparent 65%); animation: drift 18s ease-in-out infinite alternate; }
+.blobB { width: 55vmax; height: 55vmax; right: -18vmax; bottom: -22vmax; background: radial-gradient(circle, rgba(255, 138, 61, .35), transparent 65%); animation: drift 22s ease-in-out infinite alternate-reverse; }
+@keyframes drift { to { transform: translate(8vmax, 6vmax) scale(1.1); } }
+
+.rays {
+  background: repeating-conic-gradient(from 0deg at 50% 55%, rgba(255, 170, 110, .07) 0deg 6deg, transparent 6deg 18deg);
+  mask-image: radial-gradient(circle at 50% 55%, #000 0, transparent 60%);
+  -webkit-mask-image: radial-gradient(circle at 50% 55%, #000 0, transparent 60%);
+  animation: spin 90s linear infinite; scale: 1.6;
+  transition: opacity 1s;
+}
+@keyframes spin { to { rotate: 360deg; } }
+
+.partyBg {
+  opacity: 0; transition: opacity .6s;
+  background: radial-gradient(ellipse at 50% 45%, #ff8a3d 0, #e8521a 38%, #a8350b 78%, #5a1a04 100%);
+}
+.grain {
+  opacity: .14; mix-blend-mode: overlay;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.vignette { background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0, 0, 0, .7)); }
+.embers { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* countdown: the room darkens, rays speed up and the core glows */
+.root[data-stage="count"] .rays { animation-duration: 12s; }
+.root[data-stage="count"] .blobA { transform: translate(15vmax, 20vmax) scale(.8); opacity: .8; }
+.root[data-stage="count"] .blobB { transform: translate(-15vmax, -20vmax) scale(.8); opacity: .8; }
+.root[data-stage="party"] .partyBg { opacity: 1; }
+.root[data-stage="party"] .rays { opacity: 2; animation-duration: 40s; }
+.root[data-stage="party"] .vignette { opacity: .5; }
+
+/* ---------- chrome ---------- */
+.chrome { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 22px 28px; z-index: 5; }
+.brand { font: 800 12px/1 var(--font-manrope); letter-spacing: .28em; opacity: .7; }
+.mute { width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(253, 246, 232, .2); background: rgba(253, 246, 232, .06); color: var(--cream); display: grid; place-items: center; font-size: 17px; cursor: pointer; transition: background .2s; }
+.mute:hover { background: rgba(253, 246, 232, .14); }
+
+/* ---------- stages ---------- */
+.stage { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 20px; z-index: 3; }
+
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font: 600 12px/1 var(--font-manrope); letter-spacing: .3em; text-transform: uppercase; color: rgba(253, 246, 232, .65); margin-bottom: 28px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--o); box-shadow: 0 0 12px var(--o); animation: blink 1.6s ease-in-out infinite; }
+@keyframes blink { 50% { opacity: .25; } }
+
+.title { font: 800 clamp(34px, 6.4vw, 92px)/1.02 var(--font-manrope); letter-spacing: -.035em; max-width: 14ch; }
+.word { display: inline-block; white-space: pre; }
+.em {
+  display: block; font: italic 400 1.25em/1 var(--serif); letter-spacing: -.02em; margin-top: .06em;
+  background: linear-gradient(100deg, #ffd8b8 0%, var(--o2) 35%, var(--o) 60%, #ffd8b8 100%);
+  background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: sheen 5s ease-in-out infinite; padding: 0 .08em .1em;
+}
+@keyframes sheen { 0%, 100% { background-position: 0% 0; } 50% { background-position: 100% 0; } }
+.ellipsis { letter-spacing: .02em; }
+.sub { font: 400 clamp(16px, 1.6vw, 20px)/1.5 var(--serif); font-style: italic; color: rgba(253, 246, 232, .7); margin-top: 18px; }
+
+/* the unveil button: rotating gradient border + glow + pulse */
+@property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.cta {
+  position: relative; margin-top: 44px; border: 0; cursor: pointer; border-radius: 999px; padding: 2px;
+  background: conic-gradient(from var(--ang), var(--o), #ffd8b8, var(--o2), var(--o), #5a1a04, var(--o));
+  animation: turn 3.5s linear infinite;
+  box-shadow: 0 0 40px rgba(232, 82, 26, .45), 0 0 120px rgba(232, 82, 26, .25);
+}
+@keyframes turn { to { --ang: 360deg; } }
+.ctaLabel {
+  position: relative; display: block; border-radius: 999px; padding: 22px 46px;
+  background: radial-gradient(ellipse at 50% 0, #2a1208, #120806 70%);
+  font: 800 15px/1 var(--font-manrope); letter-spacing: .34em; text-transform: uppercase; color: var(--cream);
+  overflow: hidden;
+}
+.ctaLabel::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255, 216, 184, .35) 50%, transparent 70%); translate: -120% 0; animation: shine 3.2s ease-in-out infinite 2s; }
+@keyframes shine { 40%, 100% { translate: 120% 0; } }
+.ctaPulse { position: absolute; inset: -2px; border-radius: inherit; border: 1px solid rgba(255, 138, 61, .7); animation: pulse 2.2s ease-out infinite; pointer-events: none; }
+@keyframes pulse { from { opacity: .9; scale: 1; } to { opacity: 0; scale: 1.35 1.8; } }
+.cta:focus-visible { outline: 2px solid var(--cream); outline-offset: 6px; }
+
+.skip { position: absolute; bottom: 28px; background: none; border: 0; color: rgba(253, 246, 232, .45); font: 500 13px var(--font-inter); letter-spacing: .08em; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
+.skip:hover { color: var(--cream); }
+
+/* ---------- countdown ---------- */
+.count { position: relative; width: 1px; height: 1px; display: grid; place-items: center; }
+.num {
+  position: absolute; font: italic 400 min(58vh, 70vw)/1 var(--serif); color: var(--cream);
+  text-shadow: 0 0 30px rgba(255, 138, 61, .9), 0 0 90px rgba(232, 82, 26, .7), 0 0 180px rgba(232, 82, 26, .45);
+  translate: 0 -4%;
+}
+.ring { position: absolute; width: 40vmin; height: 40vmin; border-radius: 50%; border: 2px solid rgba(255, 138, 61, .8); box-shadow: 0 0 40px rgba(232, 82, 26, .6), inset 0 0 40px rgba(232, 82, 26, .4); }
+.bars { position: absolute; bottom: 48px; display: flex; gap: 8px; }
+.bar, .barOn { width: 34px; height: 3px; border-radius: 3px; background: rgba(253, 246, 232, .18); transition: background .3s, box-shadow .3s; }
+.barOn { background: var(--o2); box-shadow: 0 0 10px var(--o); }
+
+/* ---------- celebration ---------- */
+.flash { position: absolute; inset: 0; background: #fff; pointer-events: none; z-index: 10; }
+.message {
+  position: relative; z-index: 2; font: 800 clamp(40px, 8.4vw, 132px)/.95 var(--font-manrope); letter-spacing: -.04em; text-transform: uppercase;
+  max-width: 11ch; color: var(--cream); text-shadow: 0 6px 0 #a8350b, 0 20px 50px rgba(90, 26, 4, .5);
+}
+.message em { display: block; font: italic 400 1.12em/1 var(--serif); text-transform: none; letter-spacing: -.02em; color: #fff3c4; text-shadow: 0 4px 0 #a8350b, 0 0 40px rgba(255, 209, 102, .7); }
+.msgSub { position: relative; z-index: 2; margin-top: 22px; font: italic 400 clamp(16px, 1.8vw, 22px)/1.4 var(--serif); color: rgba(255, 246, 232, .92); }
+.actions { position: relative; z-index: 2; display: flex; gap: 12px; margin-top: 34px; flex-wrap: wrap; justify-content: center; }
+.primary, .ghost { display: inline-flex; align-items: center; gap: 10px; border-radius: 999px; padding: 16px 28px; font: 700 15px/1 var(--font-manrope); cursor: pointer; transition: transform .2s, background .2s; }
+.primary { background: var(--cream); color: #a8350b; border: 0; box-shadow: 0 14px 30px rgba(90, 26, 4, .35); }
+.ghost { background: rgba(255, 255, 255, .08); color: var(--cream); border: 1px solid rgba(253, 246, 232, .55); }
+.primary:hover, .ghost:hover { transform: translateY(-2px); }
+.ghost:hover { background: rgba(255, 255, 255, .16); }
+.primary:focus-visible, .ghost:focus-visible { outline: 2px solid var(--cream); outline-offset: 4px; }
+
+.sparkle { position: absolute; width: 26px; height: 26px; z-index: 1; pointer-events: none;
+  background: #fff3c4; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+  filter: drop-shadow(0 0 8px #ffd166); animation: twinkle 1.8s ease-in-out infinite; scale: 0; }
+@keyframes twinkle { 0%, 100% { scale: 0; rotate: 0deg; } 50% { scale: 1; rotate: 90deg; } }
+
+.balloons { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.balloon { position: absolute; bottom: 0; translate: 0 110%; animation: rise linear forwards; filter: drop-shadow(0 12px 14px rgba(90, 26, 4, .35)); }
+.balloon svg { display: block; animation: sway var(--sway) ease-in-out infinite alternate; transform-origin: 50% 100%; }
+@keyframes rise { to { translate: 0 calc(-100vh - 20px); } }
+@keyframes sway { from { rotate: -6deg; } to { rotate: 6deg; } }
+
+.canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 8; }
+
+@media (max-width: 600px) {
+  .chrome { padding: 16px; }
+  .eyebrow { font-size: 10px; letter-spacing: .22em; }
+  .ctaLabel { padding: 19px 32px; font-size: 13px; }
+  .balloon { scale: .7; }
+  .message { font-size: 13vw; }
+  .bars { bottom: 36px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blobA, .blobB, .rays, .cta, .ctaLabel::after, .ctaPulse, .em, .dot, .sparkle, .balloon, .balloon svg { animation: none; }
+  .balloon { display: none; }
+}
