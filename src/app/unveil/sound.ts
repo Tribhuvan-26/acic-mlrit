@@ -128,3 +128,18 @@ export function impact() {
     o.start(s); o.stop(s + 1.7);
   });
 }
+
+/* Wax seal cracking: a short, dry snap. */
+export function crack() {
+  const a = audio();
+  if (!a || !master) return;
+  const out = master, t = a.currentTime;
+  [0, 0.035, 0.08].forEach((d, i) => {
+    const n = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+    n.buffer = noise(a, 0.08);
+    f.type = "bandpass"; f.frequency.value = 1800 + i * 900; f.Q.value = 3;
+    g.gain.setValueAtTime(0.5 - i * 0.12, t + d); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.06);
+    n.connect(f).connect(g).connect(out);
+    n.start(t + d);
+  });
+}
