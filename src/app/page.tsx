@@ -10,7 +10,7 @@ export default function Home() {
 
 
 <nav id="nav" aria-label="Primary">
-  <a href="#home" className="logo"><Image src="/acic-logo.png" alt="ACIC" width={94} height={42} priority /></a>
+  <a href="#home" className="logo"><Image src="/acic-logo.png" alt="ACIC" width={91} height={42} priority /></a>
   <button id="mt" aria-label="Open menu" aria-expanded="false"><List /></button>
   <div className="links">
     <a className="l on" href="#home">Home</a>
@@ -213,7 +213,7 @@ export default function Home() {
   <div className="wrap">
     <div className="fgrid">
       <div>
-        <span className="logo"><Image src="/acic-logo.png" alt="ACIC" width={94} height={42} /></span>
+        <span className="logo"><Image src="/acic-logo.png" alt="ACIC" width={91} height={42} /></span>
         <div style={{"color": "#fff", "fontWeight": "700"} as React.CSSProperties}>ACIC-MLR Institute of Technology Foundation</div>
         <p style={{"marginTop": "8px"} as React.CSSProperties}>Enabling infrastructure and mentorship for innovators in underserved regions.</p>
         <p className="fhand">Empowering innovations for Bharath.</p>
